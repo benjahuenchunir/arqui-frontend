@@ -1,3 +1,17 @@
+
+- [Frontend](http://frontend-cloud-storage.s3-website-us-east-1.amazonaws.com/)
+
+Configurar amazon cli
+```sh
+aws configure
+```
+
+
+```sh
+aws s3 sync dist/ s3://frontend-cloud-storage --delete
+```
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
