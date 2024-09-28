@@ -24,17 +24,19 @@ jobs:
       - name: Run ESLint
         run: yarn lint
 
+      - name: Build project
+        run: yarn build
+
       - name: Serve the build
         run: |
           yarn global add serve
-          serve -s dist &
-          sleep 5
+          serve -s dist -l 3000 &
+          sleep 10
       
       - name: Audit URLs using Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
           urls: http://localhost:3000
-          budgetPath: ./budget.json
           uploadArtifacts: true
           temporaryPublicStorage: true
 
