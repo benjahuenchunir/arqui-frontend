@@ -1,64 +1,83 @@
+# Frontend
+
+This is the frontend project for Arqui, built with React, Vite, and TypeScript. It includes ESLint for linting and Lighthouse for performance reviews.
+
+## Accessing the Frontend
+
+You can access the deployed frontend using the following links:
+
+- **Domain Link** (can take a while to refresh after deploying): [https://web.numby.me/](https://web.numby.me/)
+- **HTTPS Link**: [https://d1ze0sqxy99jih.cloudfront.net](https://d1ze0sqxy99jih.cloudfront.net)
+- **HTTP Link**: [http://frontend-cloud-storage.s3-website-us-east-1.amazonaws.com/](http://frontend-cloud-storage.s3-website-us-east-1.amazonaws.com/)
+
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Scripts](#scripts)
+- [Dependencies](#dependencies)
+- [CI Pipeline](#ci-pipeline)
+
+## Installation
+
+To get started, clone the repository and install the dependencies:
+
+```sh
+git clone https://github.com/benjahuenchunir/arqui-frontend.git
+cd arqui-frontend
+yarn install
+```
+
+## Scripts
+
+- `yarn install`: Install the project dependencies.
+- `yarn dev`: Start the development server.
+- `yarn build`: Build the project for production in `dist` directory.
+- `yarn lint`: Run ESLint to lint the project.
+- `yarn preview`: Preview the production build.
+
+## Dependencies
+
+### Production Dependencies
+
+`react`: ^18.3.1
+`react-dom`: ^18.3.1
+`react-router-dom`: ^6.26.2
+`sass`: ^1.78.0
+
+### Development Dependencies
+
+`@eslint/js`: ^9.9.0
+`@types/react`: ^18.3.3
+`@types/react-dom`: ^18.3.0
+`@vitejs/plugin-react`: ^4.3.1
+`eslint`: ^9.11.1
+`eslint-plugin-react`: ^7.37.0
+`eslint-plugin-react-hooks`: ^5.1.0-rc.0
+`eslint-plugin-react-refresh`: ^0.4.9
+`globals`: ^15.9.0
+`typescript`: ^5.5.3
+`typescript-eslint`: ^8.0.1
+`vite`: ^5.4.1
+
+## CI Pipeline
+The CI pipeline is set up using GitHub Actions. It includes steps for linting and performance reviews using Lighthouse.
+
+### GitHub Actions Workflow
+Here is the GitHub Actions workflow (.github/workflows/deploy.yaml):
+
+### Setting Up Secrets
+To set up the necessary secrets for AWS credentials and CloudFront distribution ID:
+
+1. Go to your GitHub repository.
+2. Click on Settings.
+3. Click on Secrets in the left sidebar.
+4. Click on New repository secret.
+5. Add the following secrets: 
+  - `AWS_ACCESS_KEY_ID`
+  - `AWS_SECRET_ACCESS_KEY`
+  - `CLOUDFRONT_DISTRIBUTION_ID`
+
+This setup ensures that your CI pipeline includes linting and performance reviews using Lighthouse, and deploys the project to S3 with cache invalidation.
 
 - [Frontend](http://frontend-cloud-storage.s3-website-us-east-1.amazonaws.com/)
-
-Configurar amazon cli
-```sh
-aws configure
-```
-
-
-```sh
-aws s3 sync dist/ s3://frontend-cloud-storage --delete
-```
-
-
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```

@@ -20,9 +20,25 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+      
+      - name: Run ESLint
+        run: yarn lint
 
       - name: Build project
         run: yarn build
+      
+      - name: Serve the build
+        run: |
+          yarn global add serve
+          serve -s dist &
+          sleep 5
+      
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v8
+        with:
+          urls: 'http://localhost:5000'
+          output_path: './lighthouse-results'
+          uploadArtifacts: true
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -33,6 +49,6 @@ jobs:
 
       - name: Sync S3 bucket
         run: aws s3 sync dist/ s3://frontend-cloud-storage --delete
-        
+
       - name: Invalidate CloudFront cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
