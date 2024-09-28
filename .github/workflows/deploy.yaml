@@ -26,7 +26,10 @@ jobs:
 
       - name: Build project
         run: yarn build
-      
+
+      - name: Install Chrome (required for Lighthouse)
+        run: sudo apt-get install -y google-chrome-stable
+
       - name: Serve the build
         run: |
           yarn global add serve
@@ -37,7 +40,6 @@ jobs:
         uses: treosh/lighthouse-ci-action@v8
         with:
           urls: 'http://localhost:5000'
-          output_path: './lighthouse-results'
           uploadArtifacts: true
 
       - name: Configure AWS credentials
