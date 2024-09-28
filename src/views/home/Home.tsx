@@ -6,6 +6,7 @@ function Home() {
   return (
     <div id="HomeContainer">
       <h1>Home</h1>
+      <p>Text to test deployment</p>
       <button onClick={() => navigate('/signin')}>Go to Sign In</button>
       <button onClick={() => navigate('/signup')}>Go to Sign Up</button>
     </div>
