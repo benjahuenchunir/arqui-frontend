@@ -11,11 +11,10 @@ function Profile() {
 
   const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL
   const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST
-  const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT
 
   useEffect(() => {
     // TODO this would ideally be a post signup trigger but this is easier
-    const backendUrl = `${BACKEND_PROTOCOL}://${BACKEND_HOST}:${BACKEND_PORT}/signup`;
+    const backendUrl = `${BACKEND_PROTOCOL}://${BACKEND_HOST}/signup`;
 
     axios.post(backendUrl, { id: user.sub, email: user.email })
       .then(() => {
