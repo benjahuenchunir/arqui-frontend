@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 interface Requests {
   request_id: number;
-  league: string;
+  league_name: string;
   status: string;
   result: string;
   quantity: number;
@@ -44,7 +44,7 @@ function MisRequests() {
       <ul>
         {requests.map((request) => (
           <li key={request.request_id} className="compra-item">
-            <p><strong>Liga:</strong> {request.league}</p>
+            <p><strong>Liga:</strong> {request.league_name}</p>
             <p><strong>Resultado:</strong> {request.result}</p>
             <p><strong>Estado:</strong> {request.status}</p>
           </li>
