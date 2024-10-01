@@ -1,9 +1,20 @@
 import { useState } from 'react';
 import { Fade } from '@mui/material';
+import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+import './Wallet.scss';
 
 function Wallet() {
+  const { user } = useAuth0();
   const [mostrarModal, setMostrarModal] = useState(false);
   const [cantidadFondos, setCantidadFondos] = useState(0);
+  const [balance, setBalance] = useState(0); // New state for balance
+  const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL as string;
+  const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST as string;
+
+  if (!user) {
+    return null;
+  }
 
   const handleAgregarFondos = () => {
     setMostrarModal(true);  // Mostrar el modal
@@ -13,27 +24,32 @@ function Wallet() {
     setMostrarModal(false);  // Cerrar el modal
   };
 
-  const handleConfirmarFondos = () => {
-    console.log(`Fondos agregados: $${cantidadFondos}`);
-    setMostrarModal(false);  // Cerrar el modal después de confirmar
-    // Aquí se agrega la lógica después
+  const handleConfirmarFondos = async () => {
+    try {
+      const response = await axios.patch(`${BACKEND_PROTOCOL}://${BACKEND_HOST}/wallet`, { uid: user.sub, amount: cantidadFondos });
+      console.log(response.data);
+      setBalance(balance + cantidadFondos); // Update balance
+      setMostrarModal(false);  // Cerrar el modal después de confirmar
+    } catch (error) {
+      console.error('Error adding funds:', error);
+    }
   };
 
   return (
-    <Fade in={true} timeout={1000}>
-      <div id="wallet-container" style = {{color: "white", textAlign: "center"}}>
-        <h1 style={{marginTop: "10px", marginBottom: "180px", fontWeight: 700, color: "#B1CDEC"}}>Tu Wallet</h1>
-        <div style = {{ backgroundColor: "#093660", maxWidth: "20%", padding: "20px 20px", borderRadius: "20px", border: "2px solid white", margin: "0 auto" }}>
+        <Fade in={true} timeout={1000}>
+      <div id="wallet-container" style={{ color: "white", textAlign: "center" }}>
+        <h1 style={{ marginTop: "10px", marginBottom: "180px", fontWeight: 700, color: "#B1CDEC" }}>Tu Wallet</h1>
+        <div style={{ backgroundColor: "#093660", maxWidth: "20%", padding: "20px 20px", borderRadius: "20px", border: "2px solid white", margin: "0 auto" }}>
           <div className="wallet-balance">
             <h2>Balance Actual:</h2>
-            <h4 style={{marginBottom: "50px"}}>$0.00</h4> {/* Ver lógica después aquí*/}
+            <h4 style={{ marginBottom: "50px" }}>${balance.toFixed(2)}</h4> {/* Updated balance display */}
           </div>
-
+    
           <div className="wallet-actions">
             <button onClick={handleAgregarFondos}>Agregar Fondos</button>
           </div>
         </div>
-
+    
         {/* Modal para agregar fondos */}
         {mostrarModal && (
           <div className="modal">
@@ -48,7 +64,7 @@ function Wallet() {
                 min="1"
               />
               <div className="modal-actions">
-                <button onClick={handleConfirmarFondos}>OK</button>
+                <button onClick={() => { void handleConfirmarFondos(); }}>OK</button> {/* Explicitly ignoring the promise */}
                 <button onClick={handleCerrarModal}>Cancelar</button>
               </div>
             </div>
