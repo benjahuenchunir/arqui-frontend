@@ -29,7 +29,10 @@ const App = () => {
       <div className="content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/compra" element={<Compra />} />
+          <Route
+            path="/compra"
+            element={<AuthenticationGuard component={Compra} />}
+          />
           <Route
             path="/profile"
             element={<AuthenticationGuard component={Profile} />}
