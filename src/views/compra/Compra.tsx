@@ -100,7 +100,7 @@ function Compra() {
     };
 
     try {
-      const response = await axios.post("/requests/frontend", requestData);
+      const response = await axios.post("/requests", requestData);
       console.log('Compra realizada:', response.data);
     } catch (error) {
       console.error('Error realizando la compra:', error);
