@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from './views/home/Home';
 import NotFound from './views/notfound/NotFound';
 import Wallet from './views/wallet/Wallet';
-import ProcesoDeCompras from './views/listadecompras/ListaDeCompras';
+import ProcesoDeCompras from './views/misrequests/MisRequests';
 import Compra from './views/compra/Compra';
 import Profile from './views/profile/Profile';
 import { AuthenticationGuard } from "./components/AuthGuard";
