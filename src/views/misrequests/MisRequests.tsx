@@ -10,9 +10,6 @@ interface Requests {
   quantity: number;
 }
 
-const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL as string;
-const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST as string;
-
 function MisRequests() {
   const { user } = useAuth0();
   const [requests, setRequests] = useState<Requests[]>([]);
@@ -24,7 +21,7 @@ function MisRequests() {
 
     const fetchRequests = async () => {
       try {
-        const response = await axios.get<Requests[]>(`${BACKEND_PROTOCOL}://${BACKEND_HOST}/requests/${user.sub}`);
+        const response = await axios.get<Requests[]>(`/requests/${user.sub}`);
         setRequests(response.data);
       } catch (error) {
         console.error('Error fetching matches:', error);

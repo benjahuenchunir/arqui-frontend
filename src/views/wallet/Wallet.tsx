@@ -9,8 +9,6 @@ function Wallet() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [cantidadFondos, setCantidadFondos] = useState(0);
   const [balance, setBalance] = useState(0); // New state for balance
-  const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL as string;
-  const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST as string;
 
   if (!user) {
     return null;
@@ -26,7 +24,7 @@ function Wallet() {
 
   const handleConfirmarFondos = async () => {
     try {
-      const response = await axios.patch(`${BACKEND_PROTOCOL}://${BACKEND_HOST}/wallet`, { uid: user.sub, amount: cantidadFondos });
+      const response = await axios.patch("/wallet", { uid: user.sub, amount: cantidadFondos });
       console.log(response.data);
       setBalance(balance + cantidadFondos); // Update balance
       setMostrarModal(false);  // Cerrar el modal después de confirmar
