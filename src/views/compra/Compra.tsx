@@ -59,9 +59,6 @@ interface Request {
   uid: string;
 }
 
-const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL as string;
-const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST as string;
-
 function Compra() {
   const { user, loginWithRedirect } = useAuth0();
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
@@ -71,7 +68,7 @@ function Compra() {
   useEffect(() => {
     const fetchFixtures = async () => {
       try {
-        const response = await axios.get<Fixture[]>(`${BACKEND_PROTOCOL}://${BACKEND_HOST}/fixtures/available`);
+        const response = await axios.get<Fixture[]>("/fixtures/available");
         setFixtures(response.data);
       } catch (error) {
         console.error('Error fetching matches:', error);
@@ -103,7 +100,7 @@ function Compra() {
     };
 
     try {
-      const response = await axios.post(`${BACKEND_PROTOCOL}://${BACKEND_HOST}/requests/frontend`, requestData);
+      const response = await axios.post("/requests/frontend", requestData);
       console.log('Compra realizada:', response.data);
     } catch (error) {
       console.error('Error realizando la compra:', error);

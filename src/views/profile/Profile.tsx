@@ -6,17 +6,12 @@ import { Fade } from '@mui/material';
 function Profile() {
   const { user } = useAuth0();
 
-  const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL as string;
-  const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST as string;
-
   useEffect(() => {
     const sendSignupData = async () => {
       if (user) {
         // TODO this would ideally be a post signup trigger but this is easier
-        const backendUrl = `${BACKEND_PROTOCOL}://${BACKEND_HOST}/signup`;
-
         try {
-          await axios.post(backendUrl, { id: user.sub, email: user.email });
+          await axios.post("/signup", { id: user.sub, email: user.email });
           console.log('Successfully sent signup data to backend');
         } catch (error) {
           console.error('Error sending signup data to backend:', error);
@@ -25,7 +20,7 @@ function Profile() {
     };
 
     void sendSignupData();
-  }, [user, BACKEND_PROTOCOL, BACKEND_HOST]);
+  }, [user]);
 
   if (!user) {
     return null;

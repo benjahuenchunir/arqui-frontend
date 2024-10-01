@@ -102,6 +102,7 @@ To set up the necessary secrets for AWS credentials and CloudFront distribution 
   - `CLOUDFRONT_DISTRIBUTION_ID` The id of the cloudfront distribution you want to deploy in
   - `VITE_AUTH0_CLIENT_ID` The client id of your auth0 application
   - `VITE_AUTH0_DOMAIN` The domain of your auth0 application
+  - `VITE_BACKEND_API_KEY` The API Gateway Key
 
 #### Env
 1. Go to your GitHub repository.
