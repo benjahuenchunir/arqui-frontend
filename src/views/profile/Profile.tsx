@@ -49,7 +49,6 @@ function Profile() {
               <div className="profile__headline" style={{ textAlign: "left" }}>
                 <p className="profile__title" style={{ marginBottom: "50px", fontSize: "30px" }}>
                   <strong>Nombre:</strong> {user.name}
-                  <strong>Nombre:</strong> {user.sub}
                 </p>
                 <p className="profile__description" style={{ marginBottom: "50px", fontSize: "30px" }}>
                   <strong> Mail: </strong> {user.email}
