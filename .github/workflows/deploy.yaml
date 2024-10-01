@@ -1,14 +1,17 @@
-name: Deploy to S3
+name: CI/CD Pipeline
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
 
 jobs:
-  deploy:
+  build-and-lint:
     runs-on: ubuntu-latest
-
+    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,6 +29,39 @@ jobs:
 
       - name: Build project
         run: yarn build
+        env:
+          VITE_AUTH0_DOMAIN: ${{ secrets.VITE_AUTH0_DOMAIN }}
+          VITE_AUTH0_CLIENT_ID: ${{ secrets.VITE_AUTH0_CLIENT_ID }}
+          VITE_AUTH0_CALLBACK_URL: ${{ vars.VITE_AUTH0_CALLBACK_URL }}
+          VITE_BACKEND_HOST: ${{ vars.VITE_BACKEND_HOST }}
+          VITE_BACKEND_PROTOCOL: ${{ vars.VITE_BACKEND_PROTOCOL }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && success()
+    environment: production
+    needs: build-and-lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.18.0'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build project
+        run: yarn build
+        env:
+          VITE_AUTH0_DOMAIN: ${{ secrets.VITE_AUTH0_DOMAIN }}
+          VITE_AUTH0_CLIENT_ID: ${{ secrets.VITE_AUTH0_CLIENT_ID }}
+          VITE_AUTH0_CALLBACK_URL: ${{ vars.VITE_AUTH0_CALLBACK_URL }}
+          VITE_BACKEND_HOST: ${{ vars.VITE_BACKEND_HOST }}
+          VITE_BACKEND_PROTOCOL: ${{ vars.VITE_BACKEND_PROTOCOL }}
 
       - name: Serve the build
         run: |
@@ -36,7 +72,7 @@ jobs:
       - name: Audit URLs using Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: http://localhost:3000
+          urls: '[ "http://localhost:3000" ]'
           uploadArtifacts: true
           temporaryPublicStorage: true
 

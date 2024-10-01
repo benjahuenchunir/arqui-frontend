@@ -24,10 +24,8 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
+  background-color: #0a1e31;
 }
 
 h1 {
@@ -65,4 +63,31 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+#compras-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.compra-item {
+  text-align: left;
+  background-color: #f0f0f0;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.compra-item p {
+  margin: 0.5rem 0;
 }
