@@ -19,6 +19,7 @@ function NavBar() {
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
+          style={{ backgroundColor: '#B1CDEC' }}
         >
           <span className="navbar-toggler-icon"></span>
         </button>

@@ -16,7 +16,9 @@ const compras: ListaDeCompras[] = [
 function ProcesoDeCompras() {
   return (
     <div id="compras-container">
-      <h1>Listado de Compras</h1>
+      <h1 style={{color: "white", marginBottom: "100px"}}>
+        Tus Compras
+      </h1>
       <ul>
         {compras.map((compra) => (
           <li key={compra.id} className="compra-item">

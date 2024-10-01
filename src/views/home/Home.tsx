@@ -1,5 +1,5 @@
 import { Button, Typography, Container } from '@mui/material';
-
+import { Fade } from '@mui/material';
 // function Home() {
 
 //   return (
@@ -18,15 +18,21 @@ function Home() {
   return (
     <div id="HomeContainer">
       <Container style={{ textAlign: 'center', padding: '50px 0', backgroundColor: '#0a1e31', color: 'white' }}>
-        <Typography variant="h1" style={{ fontWeight: 700, color: "#B1CDEC" }}>
-          CoolGoat
-        </Typography>
-        <Typography variant="body1" style={{ marginTop: '100px', fontSize: 32 }}>
-          ¡Apuesta y gana con tus equipos preferidos!
-        </Typography>
-        <Button variant="contained" color="primary" style={{ marginTop: '75px' , fontSize: 20}}>
-          Ver Partidos
-        </Button>
+        <Fade in={true} timeout={{ enter: 0, exit: 2000 }}>
+          <Typography variant="h1" style={{ fontWeight: 700, color: "#B1CDEC" }}>
+            CoolGoat
+          </Typography>
+        </Fade>
+        <Fade in={true} timeout={{ enter: 5000, exit: 3000 }}>
+          <Typography variant="body1" style={{ marginTop: '100px', fontSize: 32 }}>
+            ¡Apuesta y gana con tus equipos preferidos!
+          </Typography>
+        </Fade>
+        <Fade in={true} timeout={{ enter: 5000, exit: 3000 }}>
+          <Button variant="contained" color="primary" style={{ marginTop: '90px' , fontSize: 20}}>
+            Ver Partidos
+          </Button>
+        </Fade>
       </Container>
     </div>
     

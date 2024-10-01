@@ -17,10 +17,10 @@ export const NavBarButtons = () => {
             )}
             {isAuthenticated && (
                 <>
-                    <Link className="nav-link" to="/wallet" style={{ fontSize: 26, color: 'white', marginRight: '20px' }}>
+                    <Link className="nav-link" to="/wallet" style={{ fontSize: 20, color: 'white', marginRight: '20px' }}>
                         Wallet
                     </Link>
-                    <Link className="nav-link" to="/profile" style={{ fontSize: 26, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
+                    <Link className="nav-link" to="/profile" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
                         Profile
                     </Link>
                     <LogoutButton />
