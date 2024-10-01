@@ -41,15 +41,19 @@ function MisRequests() {
   return (
     <div id="requests-container">
       <h1>Listado de mis Requests</h1>
-      <ul>
-        {requests.map((request) => (
-          <li key={request.request_id} className="compra-item">
-            <p><strong>Liga:</strong> {request.league_name}</p>
-            <p><strong>Resultado:</strong> {request.result}</p>
-            <p><strong>Estado:</strong> {request.status}</p>
-          </li>
-        ))}
-      </ul>
+      {requests.length === 0 ? (
+        <p>No tienes requests en este momento.</p>
+      ) : (
+        <ul>
+          {requests.map((request) => (
+            <li key={request.request_id} className="compra-item">
+              <p><strong>Liga:</strong> {request.league_name}</p>
+              <p><strong>Resultado:</strong> {request.result}</p>
+              <p><strong>Estado:</strong> {request.status}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
