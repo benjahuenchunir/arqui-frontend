@@ -4,12 +4,7 @@ This is the frontend project for Arqui, built with React, Vite, and TypeScript. 
 
 ## Accessing the Frontend
 
-You can access the deployed frontend using the following links:
-
-- **Domain Link** (can take a while to refresh after deploying): [https://web.numby.me/](https://web.numby.me/)
-- **HTTPS Link**: [https://d1ze0sqxy99jih.cloudfront.net](https://d1ze0sqxy99jih.cloudfront.net)
-- **HTTP Link**: [http://frontend-cloud-storage.s3-website-us-east-1.amazonaws.com/](http://frontend-cloud-storage.s3-website-us-east-1.amazonaws.com/)
-
+- **Domain Link**: [https://web.numby.me/](https://web.numby.me/)
 
 ## Table of Contents
 
@@ -17,6 +12,7 @@ You can access the deployed frontend using the following links:
 - [Scripts](#scripts)
 - [Dependencies](#dependencies)
 - [CI Pipeline](#ci-pipeline)
+- [Local Development](#local-development)
 
 ## Installation
 
@@ -40,6 +36,14 @@ yarn install
 
 ### Production Dependencies
 
+`@auth0/auth0-react`: ^2.2.4
+`@emotion/react`: ^11.13.3
+`@emotion/styled`: ^11.13.0
+`@mui/material`: ^6.1.1
+`@popperjs/core`: ^2.11.8
+`axios`: ^1.7.7
+`bootstrap`: ^5.3.3
+`esbuild`: ^0.24.0
 `react`: ^18.3.1
 `react-dom`: ^18.3.1
 `react-router-dom`: ^6.26.2
@@ -63,21 +67,53 @@ yarn install
 ## CI Pipeline
 The CI pipeline is set up using GitHub Actions. It includes steps for linting and performance reviews using Lighthouse.
 
-### GitHub Actions Workflow
-Here is the GitHub Actions workflow (.github/workflows/deploy.yaml):
+Its separated in two jobs, both use the enviroment production and secrets
 
-### Setting Up Secrets
+On pull requests to `main` run Build and Lint Job
+1. Checkout Code: Uses the actions/checkout@v3 action to check out the repository code.
+2. Set Up Node.js: Uses the actions/setup-node@v3 action to set up Node.js version 18.18.0.
+3. Install Dependencies: Runs yarn install to install project dependencies.
+4. Run ESLint: Runs yarn lint to lint the project using ESLint.
+5. Build Project: Runs yarn build to build the project for production.
+
+On push to `main` run Deploy Job
+1. Run Build and Lint Job and if success continues
+2. Checkout Code: Uses the actions/checkout@v3 action to check out the repository code.
+3. Set Up Node.js: Uses the actions/setup-node@v3 action to set up Node.js version 18.18.0.
+4. Install Dependencies: Runs yarn install to install project dependencies.
+5. Build Project: Runs yarn build to build the project for production.
+6. Serve the Build: Installs the serve package globally and serves the build on port 3000 for Lighthouse auditing.
+7. Audit URLs using Lighthouse: Uses the treosh/lighthouse-ci-action@v12 action to audit the URLs using Lighthouse. The results are uploaded and stored as a artifact.
+8. Configure AWS Credentials: Uses the aws-actions/configure-aws-credentials@v2 action to configure AWS credentials using GitHub secrets.
+9. Sync S3 Bucket: Runs aws s3 sync dist/ s3://frontend-cloud-storage --delete to sync the build output to the S3 bucket, deleting any files that no longer exist in the build output.
+10. Invalidate CloudFront Cache: Runs aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*" to invalidate the CloudFront cache, ensuring that the latest build is served.
+
+### Setting Up Secrets and Enviroment
 To set up the necessary secrets for AWS credentials and CloudFront distribution ID:
 
+#### Secrets
 1. Go to your GitHub repository.
 2. Click on Settings.
 3. Click on Secrets in the left sidebar.
 4. Click on New repository secret.
 5. Add the following secrets: 
-  - `AWS_ACCESS_KEY_ID`
-  - `AWS_SECRET_ACCESS_KEY`
-  - `CLOUDFRONT_DISTRIBUTION_ID`
+  - `AWS_ACCESS_KEY_ID` The access key id of a IAM AWS account
+  - `AWS_SECRET_ACCESS_KEY` The secret access key of a IAM AWS account
+  - `CLOUDFRONT_DISTRIBUTION_ID` The id of the cloudfront distribution you want to deploy in
+  - `VITE_AUTH0_CLIENT_ID` The client id of your auth0 application
+  - `VITE_AUTH0_DOMAIN` The domain of your auth0 application
 
-This setup ensures that your CI pipeline includes linting and performance reviews using Lighthouse, and deploys the project to S3 with cache invalidation.
+#### Env
+1. Go to your GitHub repository.
+2. Click on Settings.
+3. Click on Enviroments in the left sidebar.
+4. Create a new enviroment called production
+5. Add the following variables: 
+  - `VITE_AUTH0_CALLBACK_URL` Frontend URL used for callbacks of auth0
+  - `VITE_BACKEND_HOST` The host and port of your backend
+  - `VITE_BACKEND_PROTOCOL` Protocol of backend (http or https)
 
-- [Frontend](http://frontend-cloud-storage.s3-website-us-east-1.amazonaws.com/)
+## Local development
+
+To run locally simply add every secret and enviroment variable to a `.env`
+A template `.env.example` is provided
