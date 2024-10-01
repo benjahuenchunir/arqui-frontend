@@ -67,7 +67,7 @@ jobs:
         run: |
           yarn global add serve
           serve -s dist -l 3000 &
-          sleep 10
+          sleep 15
       
       - name: Audit URLs using Lighthouse
         uses: treosh/lighthouse-ci-action@v12
