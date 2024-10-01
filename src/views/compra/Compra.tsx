@@ -1,7 +1,9 @@
 import '../../index.css';
 import { useState } from 'react';
+import { useEffect } from 'react';
+import axios from 'axios';
 
-interface Compra {
+interface Fixture {
   id: number;
   league: string;
   home: string;
@@ -15,15 +17,26 @@ interface Compra {
   };
 }
 
-const compras: Compra[] = [
-  { id: 1, league: 'La liga', home: 'Barcelona FC', away: 'Real Madrid', date: '23-01-2024', bonos: 10, odds: { homeWin: 1.8, draw: 3.5, awayWin: 2.2 } },
-  { id: 2, league: 'Premiere', home: 'Bornemouth', away: 'Southampton', date: '25-01-2024', bonos: 15, odds: { homeWin: 2.1, draw: 3.2, awayWin: 2.4 } },
-  { id: 3, league: 'Futbol Chileno', home: 'Huachipato', away: 'Colo-colo', date: '06-05-2024', bonos: 5, odds: { homeWin: 3.0, draw: 3.0, awayWin: 1.7 } },
-];
+const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL as string;
+const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST as string;
 
 function Compra() {
+  const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [bonosSeleccionados, setBonosSeleccionados] = useState<{ [key: number]: number }>({});
   const [apuestaSeleccionada, setApuestaSeleccionada] = useState<{ [key: number]: string | null }>({});
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get<Fixture[]>(`${BACKEND_PROTOCOL}://${BACKEND_HOST}/fixtures/available`);
+        setFixtures(response.data);
+      } catch (error) {
+        console.error('Error fetching matches:', error);
+      }
+    };
+
+    void fetchRequests();
+  });
 
   const handleComprar = (id: number) => {
     const cantidadBonos = bonosSeleccionados[id] || 1;  // Valor por defecto
@@ -49,39 +62,39 @@ function Compra() {
     <div id="compras-container">
       <h1>Compra de Bonos</h1>
       <ul>
-        {compras.map((compra) => (
-          <li key={compra.id} className="compra-item">
-            <p><strong>Liga:</strong> {compra.league}</p>
-            <p><strong>Local:</strong> {compra.home}</p>
-            <p><strong>Visita:</strong> {compra.away}</p>
-            <p><strong>Fecha:</strong> {compra.date}</p>
-            <p><strong>Bonos disponibles:</strong> {compra.bonos}</p>
+        {fixtures.map((fixtures) => (
+          <li key={fixtures.id} className="compra-item">
+            <p><strong>Liga:</strong> {fixtures.league}</p>
+            <p><strong>Local:</strong> {fixtures.home}</p>
+            <p><strong>Visita:</strong> {fixtures.away}</p>
+            <p><strong>Fecha:</strong> {fixtures.date}</p>
+            <p><strong>Bonos disponibles:</strong> {fixtures.bonos}</p>
 
             {/* Odds y botones de apuesta */}
             <div className="apuestas-container">
               <div className="apuesta-item">
-                <p><strong>Gana {compra.home}:</strong> {compra.odds.homeWin}</p>
+                <p><strong>Gana {fixtures.home}:</strong> {fixtures.odds.homeWin}</p>
                 <button
-                  className={apuestaSeleccionada[compra.id] === 'Local' ? 'selected' : ''}
-                  onClick={() => handleApuestaChange(compra.id, 'Local')}
+                  className={apuestaSeleccionada[fixtures.id] === 'Local' ? 'selected' : ''}
+                  onClick={() => handleApuestaChange(fixtures.id, 'Local')}
                 >
                   Gana Local
                 </button>
               </div>
               <div className="apuesta-item">
-                <p><strong>Empate:</strong> {compra.odds.draw}</p>
+                <p><strong>Empate:</strong> {fixtures.odds.draw}</p>
                 <button
-                  className={apuestaSeleccionada[compra.id] === 'Empate' ? 'selected' : ''}
-                  onClick={() => handleApuestaChange(compra.id, 'Empate')}
+                  className={apuestaSeleccionada[fixtures.id] === 'Empate' ? 'selected' : ''}
+                  onClick={() => handleApuestaChange(fixtures.id, 'Empate')}
                 >
                   Empate
                 </button>
               </div>
               <div className="apuesta-item">
-                <p><strong>Gana {compra.away}:</strong> {compra.odds.awayWin}</p>
+                <p><strong>Gana {fixtures.away}:</strong> {fixtures.odds.awayWin}</p>
                 <button
-                  className={apuestaSeleccionada[compra.id] === 'Visita' ? 'selected' : ''}
-                  onClick={() => handleApuestaChange(compra.id, 'Visita')}
+                  className={apuestaSeleccionada[fixtures.id] === 'Visita' ? 'selected' : ''}
+                  onClick={() => handleApuestaChange(fixtures.id, 'Visita')}
                 >
                   Gana Visita
                 </button>
@@ -89,19 +102,19 @@ function Compra() {
             </div>
 
             {/* Selector de cantidad de bonos */}
-            <label htmlFor={`bonos-${compra.id}`}>Selecciona cantidad de bonos (1 a {compra.bonos}):</label>
+            <label htmlFor={`bonos-${fixtures.id}`}>Selecciona cantidad de bonos (1 a {fixtures.bonos}):</label>
             <input
               type="number"
-              id={`bonos-${compra.id}`}
+              id={`bonos-${fixtures.id}`}
               name="bonos"
               min="1"
-              max={compra.bonos}
-              value={bonosSeleccionados[compra.id] || 1}
-              onChange={(e) => handleBonosChange(compra.id, parseInt(e.target.value))}
+              max={fixtures.bonos}
+              value={bonosSeleccionados[fixtures.id] || 1}
+              onChange={(e) => handleBonosChange(fixtures.id, parseInt(e.target.value))}
             />
 
             {/* Botón de compra */}
-            <button onClick={() => handleComprar(compra.id)}>Comprar</button>
+            <button onClick={() => handleComprar(fixtures.id)}>Comprar</button>
           </li>
         ))}
       </ul>
