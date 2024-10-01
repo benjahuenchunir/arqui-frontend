@@ -1,34 +1,36 @@
 import { Link } from "react-router-dom";
 import { NavBarButtons } from "./NavBarButtons";
 import "./NavBar.scss";
+import { Typography} from '@mui/material';
 
 function NavBar() {
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#093660' }}>
       <div className="container-fluid header">
-        <div>
-          <Link className="navbar-brand" to="/">
-            Home
-          </Link>
-          <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to="/">
+          <Typography fontWeight="bold" style={{ fontSize: 36, color: '#E2ECF8' }}> 
+            CoolGoat
+          </Typography>
+        </Link>
+        <Link className="navbar-brand" to="/">
+          <Typography fontWeight="bold" style={{ fontSize: 20, color: 'white' }}> 
             Apostar
-          </Link>
-        </div>
-        <div>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <NavBarButtons />
-          </div>
+          </Typography>
+        </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+          style={{ backgroundColor: '#B1CDEC' }}
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <NavBarButtons />
         </div>
       </div>
     </nav>
