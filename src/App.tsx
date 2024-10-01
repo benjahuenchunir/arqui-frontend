@@ -1,59 +1,49 @@
 import './App.scss';
-import LoginButton from "./components/LoginButton";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useAuth0 } from "@auth0/auth0-react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import { Route, Routes } from "react-router-dom";
 import Home from './views/home/Home';
-import SignIn from './views/signin/SignIn';
-import SignUp from './views/signup/SignUp';
 import NotFound from './views/notfound/NotFound';
 import Wallet from './views/wallet/Wallet';
 import ProcesoDeCompras from './views/listadecompras/ListaDeCompras';
 import Compra from './views/compra/Compra';
-
+import Profile from './views/profile/Profile';
+import { AuthenticationGuard } from "./components/AuthGuard";
+import PageLoader from "./components/PageLoader/PageLoader";
+import NavBar from "./components/NavBar";
 
 const App = () => {
-  const { isAuthenticated } = useAuth0();
+  const { isLoading } = useAuth0();
+
+  if (isLoading) {
+    return (
+      <div className="page-layout">
+        <PageLoader />
+      </div>
+    );
+  }
 
   return (
-    <Router>
-      <div>
-        <Navbar />
-        {isAuthenticated ? (
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/wallet" element={<Wallet />} />
-            <Route path="/compra" element={<Compra />} />
-            <Route path="/procesocompra" element={<ProcesoDeCompras />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        ) : (
-          <LoginButton />
-        )}
+    <div className="page-layout">
+      <NavBar />
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/compra" element={<Compra />} />
+          <Route
+            path="/profile"
+            element={<AuthenticationGuard component={Profile} />}
+          />
+          <Route
+            path="/wallet"
+            element={<AuthenticationGuard component={Wallet} />}
+          />
+          <Route path="/procesocompra" element={<ProcesoDeCompras />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </div>
-    </Router>
+    </div>
   );
 };
 
 export default App;
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <Routes>
-//         <Route path="/" element={<Home />} />
-//         <Route path="/signin" element={<SignIn />} />
-//         <Route path="/signup" element={<SignUp />} />
-//         <Route path="/wallet" element={<Wallet />} />
-//         <Route path="/compra" element={<Compra />} />
-//         <Route path="/procesocompra" element={<ProcesoDeCompras />} />
-//         <Route path="*" element={<NotFound />} />
-//       </Routes>
-//     </div>
-//   );
-// }
-
-// export default App;
