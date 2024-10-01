@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       - name: Checkout code
@@ -26,6 +27,13 @@ jobs:
 
       - name: Build project
         run: yarn build
+        env:
+          VITE_AUTH0_DOMAIN: ${{ secrets.VITE_AUTH0_DOMAIN }}
+          VITE_AUTH0_CLIENT_ID: ${{ secrets.VITE_AUTH0_CLIENT_ID }}
+          VITE_AUTH0_CALLBACK_URL: ${{ secrets.VITE_AUTH0_CALLBACK_URL }}
+          VITE_BACKEND_HOST: ${{ vars.VITE_BACKEND_HOST }}
+          VITE_BACKEND_PORT: ${{ vars.VITE_BACKEND_PORT }}
+          VITE_BACKEND_PROTOCOL: ${{ vars.VITE_BACKEND_PROTOCOL }}
 
       - name: Serve the build
         run: |
