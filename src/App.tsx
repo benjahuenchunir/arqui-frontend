@@ -10,7 +10,7 @@ import Compra from './views/compra/Compra';
 import Profile from './views/profile/Profile';
 import { AuthenticationGuard } from "./components/AuthGuard";
 import PageLoader from "./components/PageLoader/PageLoader";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/NavBar/NavBar";
 
 const App = () => {
   const { isLoading } = useAuth0();

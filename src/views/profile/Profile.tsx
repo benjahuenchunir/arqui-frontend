@@ -1,4 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
+import { useEffect } from "react";
 
 function Profile() {
   const { user } = useAuth0();
@@ -6,6 +8,23 @@ function Profile() {
   if (!user) {
     return null;
   }
+
+  const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL
+  const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST
+  const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT
+
+  useEffect(() => {
+    // TODO this would ideally be a post signup trigger but this is easier
+    const backendUrl = `${BACKEND_PROTOCOL}://${BACKEND_HOST}:${BACKEND_PORT}/signup`;
+
+    axios.post(backendUrl, { id: user.sub, email: user.email })
+      .then(() => {
+        console.log('Successfully sent signup data to backend');
+      })
+      .catch(error => {
+        console.error('Error sending signup data to backend:', error);
+      });
+  });
 
   return (
       <div className="content-layout">
@@ -17,9 +36,6 @@ function Profile() {
             <span>
               You can use the <strong>ID Token</strong> to get the profile
               information of an authenticated user.
-            </span>
-            <span>
-              <strong>Only authenticated users can access this page.</strong>
             </span>
           </p>
           <div className="profile-grid">
