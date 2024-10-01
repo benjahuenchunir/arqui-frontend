@@ -8,7 +8,7 @@ export const LogoutButton = () => {
       logoutParams: {
         returnTo: window.location.origin,
       },
-    });
+    }).catch(console.error);
   };
 
   return (

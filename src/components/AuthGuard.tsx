@@ -3,7 +3,7 @@ import PageLoader from "./PageLoader/PageLoader";
 import { ComponentType } from "react";
 
 interface AuthenticationGuardProps {
-  component: ComponentType<any>;
+  component: ComponentType;
 }
 
 export const AuthenticationGuard = ({ component }: AuthenticationGuardProps) => {

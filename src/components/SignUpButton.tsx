@@ -15,7 +15,12 @@ export const SignupButton = () => {
   };
 
   return (
-    <button className="button__sign-up" onClick={handleSignUp}>
+    <button
+      className="button__sign-up"
+      onClick={() => {
+        handleSignUp().catch(console.error);
+      }}
+    >
       Sign Up
     </button>
   );

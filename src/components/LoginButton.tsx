@@ -12,7 +12,12 @@ export const LoginButton = () => {
   };
 
   return (
-    <button className="button__login" onClick={handleLogin}>
+    <button
+      className="button__login"
+      onClick={() => {
+        handleLogin().catch(console.error);
+      }}
+    >
       Log In
     </button>
   );
