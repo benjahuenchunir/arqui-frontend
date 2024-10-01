@@ -8,22 +8,24 @@ function Profile() {
 
   const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL as string;
   const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST as string;
-  const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT as string;
 
   useEffect(() => {
-    if (user) {
-      // TODO this would ideally be a post signup trigger but this is easier
-      const backendUrl = `${BACKEND_PROTOCOL}://${BACKEND_HOST}:${BACKEND_PORT}/signup`;
+    const sendSignupData = async () => {
+      if (user) {
+        // TODO this would ideally be a post signup trigger but this is easier
+        const backendUrl = `${BACKEND_PROTOCOL}://${BACKEND_HOST}/signup`;
 
-      axios.post(backendUrl, { id: user.sub, email: user.email })
-        .then(() => {
+        try {
+          await axios.post(backendUrl, { id: user.sub, email: user.email });
           console.log('Successfully sent signup data to backend');
-        })
-        .catch(error => {
+        } catch (error) {
           console.error('Error sending signup data to backend:', error);
-        });
-    }
-  }, [user, BACKEND_PROTOCOL, BACKEND_HOST, BACKEND_PORT]);
+        }
+      }
+    };
+
+    void sendSignupData();
+  }, [user, BACKEND_PROTOCOL, BACKEND_HOST]);
 
   if (!user) {
     return null;

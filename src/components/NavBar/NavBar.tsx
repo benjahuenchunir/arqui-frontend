@@ -12,7 +12,7 @@ function NavBar() {
             CoolGoat
           </Typography>
         </Link>
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to="/compra">
           <Typography fontWeight="bold" style={{ fontSize: 20, color: 'white' }}> 
             Apostar
           </Typography>
