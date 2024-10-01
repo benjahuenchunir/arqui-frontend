@@ -39,8 +39,8 @@ function MisRequests() {
   }
 
   return (
-    <div id="requests-container">
-      <h1>Listado de mis Requests</h1>
+    <div id="requests-container" style={{color:"white", textAlign: "center"}}>
+      <h1 style={{marginBottom: "50px"}}>Mis Requests </h1>
       {requests.length === 0 ? (
         <p>No tienes requests en este momento.</p>
       ) : (

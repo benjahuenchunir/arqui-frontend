@@ -125,8 +125,8 @@ function Compra() {
   };
 
   return (
-    <div id="compras-container">
-      <h1>Compra de Bonos</h1>
+    <div id="compras-container" style={{color: "white", verticalAlign: "top"}}>
+      <h1 style={{color: "white", verticalAlign: "top", marginBottom: "100px"}}>Compra de Bonos</h1>
       {fixtures.length === 0 ? (
         <p>No hay fixtures disponibles en este momento.</p>
       ) : (
