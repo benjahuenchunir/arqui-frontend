@@ -1,11 +1,35 @@
+import { Button, Typography, Container } from '@mui/material';
+
+// function Home() {
+
+//   return (
+//     <div id="HomeContainer">
+//       <h1>Bienvenido a CoolGoat</h1>
+//       <p>Algo muy bonito y que venda la página</p>
+//     </div>
+//   );
+// }
+
+// export default Home;
+
+
 
 function Home() {
-
   return (
     <div id="HomeContainer">
-      <h1>Home</h1>
-      <p>Algo muy bonito y que venda la página</p>
+      <Container style={{ textAlign: 'center', padding: '50px 0', backgroundColor: '#0a1e31', color: 'white' }}>
+        <Typography variant="h1" style={{ fontWeight: 700, color: "#B1CDEC" }}>
+          CoolGoat
+        </Typography>
+        <Typography variant="body1" style={{ marginTop: '100px', fontSize: 32 }}>
+          ¡Apuesta y gana con tus equipos preferidos!
+        </Typography>
+        <Button variant="contained" color="primary" style={{ marginTop: '75px' , fontSize: 20}}>
+          Ver Partidos
+        </Button>
+      </Container>
     </div>
+    
   );
 }
 

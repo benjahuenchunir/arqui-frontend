@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom";
 import { NavBarButtons } from "./NavBarButtons";
+import { Typography} from '@mui/material';
 
 function NavBar() {
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#093660' }}>
       <div className="container-fluid header">
         <Link className="navbar-brand" to="/">
-          Home
+          <Typography fontWeight="bold" style={{ fontSize: 36, color: '#E2ECF8' }}> 
+            CoolGoat
+          </Typography>
         </Link>
         <button
           className="navbar-toggler"

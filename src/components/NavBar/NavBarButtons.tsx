@@ -8,7 +8,7 @@ export const NavBarButtons = () => {
     const { isAuthenticated } = useAuth0();
 
     return (
-        <div className="nav-bar__buttons d-flex align-items-center">
+        <div className="nav-bar__buttons d-flex align-items-center ms-auto">
             {!isAuthenticated && (
                 <>
                     <SignupButton />
@@ -17,10 +17,10 @@ export const NavBarButtons = () => {
             )}
             {isAuthenticated && (
                 <>
-                    <Link className="nav-link" to="/wallet">
+                    <Link className="nav-link" to="/wallet" style={{ fontSize: 26, color: 'white', marginRight: '20px' }}>
                         Wallet
                     </Link>
-                    <Link className="nav-link" to="/profile">
+                    <Link className="nav-link" to="/profile" style={{ fontSize: 26, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
                         Profile
                     </Link>
                     <LogoutButton />
