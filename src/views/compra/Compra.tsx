@@ -65,27 +65,16 @@ function Compra() {
   const [bonosSeleccionados, setBonosSeleccionados] = useState<{ [key: number]: number }>({});
   const [apuestaSeleccionada, setApuestaSeleccionada] = useState<{ [key: number]: string | null }>({});
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchFixtures = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_PROTOCOL}://${import.meta.env.VITE_BACKEND_HOST}/fixtures/available`, {
-          headers: {
-            'X-Api-Key': import.meta.env.VITE_BACKEND_API_KEY as string,
-            'Content-Type': 'application/json'
-          }
-        });
-  
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-  
-        const data: Fixture[] = await response.json() as Fixture[];
-        setFixtures(data);
+        const response = await axios.get<Fixture[]>("/fixtures/available");
+        setFixtures(response.data);
       } catch (error) {
         console.error('Error fetching matches:', error);
       }
     };
-  
+
     void fetchFixtures();
   }, []);
 
