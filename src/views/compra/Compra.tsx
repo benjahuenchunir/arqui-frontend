@@ -65,27 +65,16 @@ function Compra() {
   const [bonosSeleccionados, setBonosSeleccionados] = useState<{ [key: number]: number }>({});
   const [apuestaSeleccionada, setApuestaSeleccionada] = useState<{ [key: number]: string | null }>({});
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchFixtures = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_PROTOCOL}://${import.meta.env.VITE_BACKEND_HOST}/fixtures/available`, {
-          headers: {
-            'X-Api-Key': import.meta.env.VITE_BACKEND_API_KEY as string,
-            'Content-Type': 'application/json'
-          }
-        });
-  
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-  
-        const data: Fixture[] = await response.json() as Fixture[];
-        setFixtures(data);
+        const response = await axios.get<Fixture[]>("/fixtures/available");
+        setFixtures(response.data);
       } catch (error) {
         console.error('Error fetching matches:', error);
       }
     };
-  
+
     void fetchFixtures();
   }, []);
 
@@ -101,11 +90,24 @@ function Compra() {
     }
 
     const cantidadBonos = bonosSeleccionados[id] || 1;  // Valor por defecto
-    const apuesta = apuestaSeleccionada[id] || 'Sin apuesta';  // Si no se seleccionó apuesta
+    const apuesta = apuestaSeleccionada[id];
+
+    let result: string;
+    if (apuesta === 'Local') {
+      const fixture = fixtures.find(f => f.id === id);
+      result = fixture ? fixture.home_team.team.name : 'error';
+    } else if (apuesta === 'Visita') {
+      const fixture = fixtures.find(f => f.id === id);
+      result = fixture ? fixture.away_team.team.name : 'error';
+    } else if (apuesta === 'Empate') {
+      result = '---';
+    } else {
+      result = 'Sin apuesta';
+    }
 
     const requestData: Request = {
       fixture_id: id,
-      result: apuesta,
+      result: result,
       quantity: cantidadBonos,
       uid: user.sub || 'error',
     };
