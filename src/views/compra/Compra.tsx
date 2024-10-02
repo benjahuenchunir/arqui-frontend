@@ -90,11 +90,24 @@ function Compra() {
     }
 
     const cantidadBonos = bonosSeleccionados[id] || 1;  // Valor por defecto
-    const apuesta = apuestaSeleccionada[id] || 'Sin apuesta';  // Si no se seleccionó apuesta
+    const apuesta = apuestaSeleccionada[id];
+
+    let result: string;
+    if (apuesta === 'Local') {
+      const fixture = fixtures.find(f => f.id === id);
+      result = fixture ? fixture.home_team.team.name : 'error';
+    } else if (apuesta === 'Visita') {
+      const fixture = fixtures.find(f => f.id === id);
+      result = fixture ? fixture.away_team.team.name : 'error';
+    } else if (apuesta === 'Empate') {
+      result = '---';
+    } else {
+      result = 'Sin apuesta';
+    }
 
     const requestData: Request = {
       fixture_id: id,
-      result: apuesta,
+      result: result,
       quantity: cantidadBonos,
       uid: user.sub || 'error',
     };
