@@ -1,14 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Fade } from '@mui/material';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import './Wallet.scss';
+
+interface WalletResponse {
+  balance: number;
+}
 
 function Wallet() {
   const { user } = useAuth0();
   const [mostrarModal, setMostrarModal] = useState(false);
   const [cantidadFondos, setCantidadFondos] = useState(0);
   const [balance, setBalance] = useState(0); // New state for balance
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!user) {
+        return;
+      }
+      try {
+        const response = await axios.get<WalletResponse>(`/wallet/${user.sub}`);
+        setBalance(response.data.balance);
+      } catch (error) {
+        console.error('Error fetching balance:', error);
+      }
+    };
+
+    void fetchBalance();
+  }, [user]);
 
   if (!user) {
     return null;
@@ -24,8 +44,7 @@ function Wallet() {
 
   const handleConfirmarFondos = async () => {
     try {
-      const response = await axios.patch("/wallet", { uid: user.sub, amount: cantidadFondos });
-      console.log(response.data);
+      await axios.patch("/wallet", { uid: user.sub, amount: cantidadFondos });
       setBalance(balance + cantidadFondos); // Update balance
       setMostrarModal(false);  // Cerrar el modal después de confirmar
     } catch (error) {
