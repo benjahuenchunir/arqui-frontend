@@ -65,23 +65,26 @@ function Compra() {
   const [bonosSeleccionados, setBonosSeleccionados] = useState<{ [key: number]: number }>({});
   const [apuestaSeleccionada, setApuestaSeleccionada] = useState<{ [key: number]: string | null }>({});
   const [filteredFixtures, setFilteredFixtures] = useState<Fixture[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [fixturesPerPage] = useState(25);  // Puedes ajustar el número de fixtures por página
   const [selectedDate, setSelectedDate] = useState<string>('');
+  const [page, setPage] = useState(0);
+  const fixturesPerPage = 10;
 
   useEffect(() => {
     const fetchFixtures = async () => {
       try {
-        const response = await axios.get<Fixture[]>("/fixtures/available");
+        const response = await axios.get<Fixture[]>(`/fixtures/available?page=${page}&count=${fixturesPerPage}`);
+        if (response.data.length === 0 && page > 0) {
+            setPage(page - 1)
+            return;
+        }
         setFixtures(response.data);
         setFilteredFixtures(response.data);
       } catch (error) {
         console.error('Error fetching matches:', error);
       }
     };
-
     void fetchFixtures();
-  }, []);
+  }, [page]);
 
     // Filtrar por fecha
     const handleDateFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,13 +97,6 @@ function Compra() {
       }
     };
   
-    // Paginar fixtures
-    const indexOfLastFixture = currentPage * fixturesPerPage;
-    const indexOfFirstFixture = indexOfLastFixture - fixturesPerPage;
-    const currentFixtures = filteredFixtures.slice(indexOfFirstFixture, indexOfLastFixture);
-  
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   const findMatchWinnerOdd = (fixture: Fixture, team: string): OddValue | null => {
     const odd = fixture.odds.find((odd) => odd.name === 'Match Winner');
     return odd?.values.find((value) => value.bet === team) || null;
@@ -176,7 +172,7 @@ function Compra() {
       ) : (
         <div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-            {currentFixtures.map((fixture) => (
+            {fixtures.map((fixture) => (
               <div key={fixture.id} className="compra-item">
                 <p><strong>Liga:</strong> {fixture.league.name}</p>
                 <p><strong>Local:</strong> {fixture.home_team.team.name}</p>
@@ -232,11 +228,10 @@ function Compra() {
           </div>
 
           <div>
-            {Array.from({ length: Math.ceil(filteredFixtures.length / fixturesPerPage) }, (_, i) => (
-              <button key={i + 1} onClick={() => paginate(i + 1)}>
-                {i + 1}
-              </button>
-            ))}
+            {page > 0 && (
+              <button onClick={() => setPage(page - 1)}>Prev</button>
+            )}
+            <button onClick={() => setPage(page + 1)}>Next</button>
           </div>
         </div>
       )}
