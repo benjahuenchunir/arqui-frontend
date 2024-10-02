@@ -11,7 +11,7 @@ function Profile() {
       if (user) {
         // TODO this would ideally be a post signup trigger but this is easier
         try {
-          await axios.post("/signup", { id: user.sub, email: user.email });
+          await axios.post("/signup", { uid: user.sub, email: user.email });
           console.log('Successfully sent signup data to backend');
         } catch (error) {
           console.error('Error sending signup data to backend:', error);
