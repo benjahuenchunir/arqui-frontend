@@ -159,9 +159,9 @@ function Compra() {
 
   return (
     <div id="compras-container" style={{color: "white"}}>
-      <h1>Compra de Bonos</h1>
+      <h1 style={{marginBottom: "50px"}}>Compra de Bonos</h1>
       <div>
-        <label htmlFor="dateFilter">Filtrar por fecha:</label>
+        <label htmlFor="dateFilter" style={{marginRight: "20px", marginBottom: "50px"}}>Filtrar por fecha:</label>
         <input
           type="date"
           id="dateFilter"
@@ -175,7 +175,6 @@ function Compra() {
         <p>No hay fixtures disponibles en este momento.</p>
       ) : (
         <div>
-          {/* Mostrar fixtures en un grid de 3 columnas */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
             {currentFixtures.map((fixture) => (
               <div key={fixture.id} className="compra-item">
@@ -186,7 +185,6 @@ function Compra() {
                 <p><strong>Fecha:</strong> {fixture.date}</p>
                 <p><strong>Bonos disponibles:</strong> {fixture.remaining_bets}</p>
 
-                {/* Odds y botones de apuesta */}
                 <div className="apuestas-container">
                   <div className="apuesta-item">
                     <p><strong>Gana {fixture.home_team.team.name}:</strong> {findMatchWinnerOdd(fixture, 'Home')?.value}</p>
@@ -217,7 +215,6 @@ function Compra() {
                   </div>
                 </div>
 
-                {/* Selector de cantidad de bonos */}
                 <label htmlFor={`bonos-${fixture.id}`}>Selecciona cantidad de bonos (1 a {fixture.remaining_bets}):</label>
                 <input
                   type="number"
@@ -229,13 +226,11 @@ function Compra() {
                   onChange={(e) => handleBonosChange(fixture.id, parseInt(e.target.value))}
                 />
 
-                {/* Botón de compra */}
                 <button onClick={() => void handleComprar(fixture.id)}>Comprar</button>
               </div>
             ))}
           </div>
 
-          {/* Paginación */}
           <div>
             {Array.from({ length: Math.ceil(filteredFixtures.length / fixturesPerPage) }, (_, i) => (
               <button key={i + 1} onClick={() => paginate(i + 1)}>
