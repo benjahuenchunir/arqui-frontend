@@ -64,12 +64,17 @@ function Compra() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [bonosSeleccionados, setBonosSeleccionados] = useState<{ [key: number]: number }>({});
   const [apuestaSeleccionada, setApuestaSeleccionada] = useState<{ [key: number]: string | null }>({});
+  const [filteredFixtures, setFilteredFixtures] = useState<Fixture[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [fixturesPerPage] = useState(25);  // Puedes ajustar el número de fixtures por página
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
   useEffect(() => {
     const fetchFixtures = async () => {
       try {
         const response = await axios.get<Fixture[]>("/fixtures/available");
         setFixtures(response.data);
+        setFilteredFixtures(response.data);
       } catch (error) {
         console.error('Error fetching matches:', error);
       }
@@ -77,6 +82,24 @@ function Compra() {
 
     void fetchFixtures();
   }, []);
+
+    // Filtrar por fecha
+    const handleDateFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const selected = event.target.value;
+      setSelectedDate(selected);
+      if (selected) {
+        setFilteredFixtures(fixtures.filter(fixture => fixture.date.includes(selected)));
+      } else {
+        setFilteredFixtures(fixtures);
+      }
+    };
+  
+    // Paginar fixtures
+    const indexOfLastFixture = currentPage * fixturesPerPage;
+    const indexOfFirstFixture = indexOfLastFixture - fixturesPerPage;
+    const currentFixtures = filteredFixtures.slice(indexOfFirstFixture, indexOfLastFixture);
+  
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const findMatchWinnerOdd = (fixture: Fixture, team: string): OddValue | null => {
     const odd = fixture.odds.find((odd) => odd.name === 'Match Winner');
@@ -89,7 +112,7 @@ function Compra() {
       return;
     }
 
-    const cantidadBonos = bonosSeleccionados[id] || 1;  // Valor por defecto
+    const cantidadBonos = bonosSeleccionados[id] || 1;
     const apuesta = apuestaSeleccionada[id];
 
     let result: string;
@@ -135,69 +158,92 @@ function Compra() {
   };
 
   return (
-    <div id="compras-container">
+    <div id="compras-container" style={{color: "white"}}>
       <h1>Compra de Bonos</h1>
-      {fixtures.length === 0 ? (
+      <div>
+        <label htmlFor="dateFilter">Filtrar por fecha:</label>
+        <input
+          type="date"
+          id="dateFilter"
+          value={selectedDate}
+          onChange={handleDateFilter}
+        />
+      </div>
+
+      
+      {filteredFixtures.length === 0 ? (
         <p>No hay fixtures disponibles en este momento.</p>
       ) : (
-        <ul>
-          {fixtures.map((fixture) => (
-            <li key={fixture.id} className="compra-item">
-              <p><strong>Liga:</strong> {fixture.league.name}</p>
-              <p><strong>Local:</strong> {fixture.home_team.team.name}</p>
-              <p><strong>Visita:</strong> {fixture.away_team.team.name}</p>
-              <p><strong>Referee:</strong> {fixture.referee}</p>
-              <p><strong>Fecha:</strong> {fixture.date}</p>
-              <p><strong>Bonos disponibles:</strong> {fixture.remaining_bets}</p>
+        <div>
+          {/* Mostrar fixtures en un grid de 3 columnas */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+            {currentFixtures.map((fixture) => (
+              <div key={fixture.id} className="compra-item">
+                <p><strong>Liga:</strong> {fixture.league.name}</p>
+                <p><strong>Local:</strong> {fixture.home_team.team.name}</p>
+                <p><strong>Visita:</strong> {fixture.away_team.team.name}</p>
+                <p><strong>Referee:</strong> {fixture.referee}</p>
+                <p><strong>Fecha:</strong> {fixture.date}</p>
+                <p><strong>Bonos disponibles:</strong> {fixture.remaining_bets}</p>
 
-              {/* Odds y botones de apuesta */}
-              <div className="apuestas-container">
-                <div className="apuesta-item">
-                  <p><strong>Gana {fixture.home_team.team.name}:</strong> {findMatchWinnerOdd(fixture, 'Home')?.value}</p>
-                  <button
-                    className={apuestaSeleccionada[fixture.id] === 'Local' ? 'selected' : ''}
-                    onClick={() => handleApuestaChange(fixture.id, 'Local')}
-                  >
-                    Gana Local
-                  </button>
+                {/* Odds y botones de apuesta */}
+                <div className="apuestas-container">
+                  <div className="apuesta-item">
+                    <p><strong>Gana {fixture.home_team.team.name}:</strong> {findMatchWinnerOdd(fixture, 'Home')?.value}</p>
+                    <button
+                      className={apuestaSeleccionada[fixture.id] === 'Local' ? 'selected' : ''}
+                      onClick={() => handleApuestaChange(fixture.id, 'Local')}
+                    >
+                      Gana Local
+                    </button>
+                  </div>
+                  <div className="apuesta-item">
+                    <p><strong>Empate:</strong> {findMatchWinnerOdd(fixture, 'Draw')?.value}</p>
+                    <button
+                      className={apuestaSeleccionada[fixture.id] === 'Empate' ? 'selected' : ''}
+                      onClick={() => handleApuestaChange(fixture.id, 'Empate')}
+                    >
+                      Empate
+                    </button>
+                  </div>
+                  <div className="apuesta-item">
+                    <p><strong>Gana {fixture.away_team.team.name}:</strong> {findMatchWinnerOdd(fixture, 'Away')?.value}</p>
+                    <button
+                      className={apuestaSeleccionada[fixture.id] === 'Visita' ? 'selected' : ''}
+                      onClick={() => handleApuestaChange(fixture.id, 'Visita')}
+                    >
+                      Gana Visita
+                    </button>
+                  </div>
                 </div>
-                <div className="apuesta-item">
-                  <p><strong>Empate:</strong> {findMatchWinnerOdd(fixture, 'Draw')?.value}</p>
-                  <button
-                    className={apuestaSeleccionada[fixture.id] === 'Empate' ? 'selected' : ''}
-                    onClick={() => handleApuestaChange(fixture.id, 'Empate')}
-                  >
-                    Empate
-                  </button>
-                </div>
-                <div className="apuesta-item">
-                  <p><strong>Gana {fixture.away_team.team.name}:</strong> {findMatchWinnerOdd(fixture, 'Away')?.value}</p>
-                  <button
-                    className={apuestaSeleccionada[fixture.id] === 'Visita' ? 'selected' : ''}
-                    onClick={() => handleApuestaChange(fixture.id, 'Visita')}
-                  >
-                    Gana Visita
-                  </button>
-                </div>
+
+                {/* Selector de cantidad de bonos */}
+                <label htmlFor={`bonos-${fixture.id}`}>Selecciona cantidad de bonos (1 a {fixture.remaining_bets}):</label>
+                <input
+                  type="number"
+                  id={`bonos-${fixture.id}`}
+                  name="bonos"
+                  min="1"
+                  max={fixture.remaining_bets}
+                  value={bonosSeleccionados[fixture.id] || 1}
+                  onChange={(e) => handleBonosChange(fixture.id, parseInt(e.target.value))}
+                />
+
+                {/* Botón de compra */}
+                <button onClick={() => void handleComprar(fixture.id)}>Comprar</button>
               </div>
+            ))}
+          </div>
 
-              {/* Selector de cantidad de bonos */}
-              <label htmlFor={`bonos-${fixture.id}`}>Selecciona cantidad de bonos (1 a {fixture.remaining_bets}):</label>
-              <input
-                type="number"
-                id={`bonos-${fixture.id}`}
-                name="bonos"
-                min="1"
-                max={fixture.remaining_bets}
-                value={bonosSeleccionados[fixture.id] || 1}
-                onChange={(e) => handleBonosChange(fixture.id, parseInt(e.target.value))}
-              />
-
-              {/* Botón de compra */}
-              <button onClick={() => void handleComprar(fixture.id)}>Comprar</button>
-            </li>
-          ))}
-        </ul>
+          {/* Paginación */}
+          <div>
+            {Array.from({ length: Math.ceil(filteredFixtures.length / fixturesPerPage) }, (_, i) => (
+              <button key={i + 1} onClick={() => paginate(i + 1)}>
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
