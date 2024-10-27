@@ -13,6 +13,7 @@ import PageLoader from "./components/PageLoader/PageLoader";
 import NavBar from "./components/NavBar/NavBar";
 import ConfirmPurchase from "./views/compra/ConfirmarCompra";
 import PurchaseCompleted from "./views/compra/PurchaseCompleted";
+import Modal from './components/Modal/Modal';
 
 const App = () => {
   const { isLoading } = useAuth0();
@@ -49,6 +50,7 @@ const App = () => {
           <Route path="/completed-purchase" element={<PurchaseCompleted />} />
         </Routes>
       </div>
+      <Modal />
     </div>
   );
 };

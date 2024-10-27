@@ -4,7 +4,7 @@ import axios from "axios";
 import styles from "./PurchaseCompleted.module.scss";
 
 interface CommitTransactionResponse {
-  approved: boolean;
+  status: string;
 }
 
 async function commitTransaction({ token }: { token: string }): Promise<CommitTransactionResponse> {
@@ -37,9 +37,10 @@ function PurchaseCompleted() {
     <div className={styles.container}>
       <h1 className={styles.heading}>Compra finalizada</h1>
       {
-        data?.approved
+        data?.status === 'AUTHORIZED'
           ? <p className={styles.paragraph}>La compra fue realizada con éxito</p>
-          : <p className={styles.paragraph}>La compra fue rechazada</p>
+          : data?.status === 'FAILED' ? <p className={styles.paragraph}>Compra rechazada por transbank</p>
+          : <p className={styles.paragraph}>Compra rechazada por el usuario</p>
       }
       <Link to="/" className={styles.link}>Volver a inicio</Link>
     </div>

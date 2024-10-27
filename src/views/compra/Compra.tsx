@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
+import { useModal } from '../../components/Modal/ModalContext';
 
 interface Team {
   id: number;
@@ -77,7 +78,9 @@ function Compra() {
   const [filteredFixtures, setFilteredFixtures] = useState<Fixture[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [page, setPage] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<'wallet' | 'webpay'>('webpay');
   const fixturesPerPage = 10;
+  const { showModal } = useModal();
 
   useEffect(() => {
     const fetchFixtures = async () => {
@@ -147,22 +150,29 @@ function Compra() {
     };
 
     try {
-      const response: AxiosResponse<ResponseData> = await axios.post("/requests/frontend", requestData);
-      console.log('Compra realizada:', response.data);
-      const data = response.data;
+      if (paymentMethod === 'webpay') {
+        const response: AxiosResponse<ResponseData> = await axios.post("/requests/frontend", requestData);
+        console.log('Compra realizada:', response.data);
+        const data = response.data;
 
-      if (data?.url && data?.token) {
-        navigate(`/confirm-purchase`, {
-            state: {
-              url: data.url,
-              token: data.token,
-              amount: data.amount,
-              title: fixture?.home_team.team.name + ' vs ' + fixture?.away_team.team.name + ' - ' + fixture?.league.name || 'Unknown',
-              price: data.price,
-          }
-        })
-      } else {
-        console.error("Missing url or token")
+        if (data?.url && data?.token) {
+          navigate(`/confirm-purchase`, {
+              state: {
+                url: data.url,
+                token: data.token,
+                amount: data.amount,
+                title: fixture?.home_team.team.name + ' vs ' + fixture?.away_team.team.name + ' - ' + fixture?.league.name || 'Unknown',
+                price: data.price,
+            }
+          })
+        } else {
+          console.error("Missing url or token")
+        }
+      } else if (paymentMethod === 'wallet') {
+        // TODO call backend to make the purchase
+        showModal('Compra realizada con éxito', 'success');
+        // const response: AxiosResponse<ResponseData> = await axios.post("/requests/wallet-payment", requestData);
+        // console.log('Compra realizada con Wallet:', response.data);
       }
       
     } catch (error) {
@@ -184,6 +194,10 @@ function Compra() {
     }));
   };
 
+  const handlePaymentMethodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setPaymentMethod(event.target.value as 'webpay' | 'wallet');
+  };
+
   return (
     <div id="compras-container" style={{color: "white"}}>
       <h1 style={{marginBottom: "50px"}}>Compra de Bonos</h1>
@@ -196,7 +210,13 @@ function Compra() {
           onChange={handleDateFilter}
         />
       </div>
-
+      <div>
+        <label htmlFor="paymentMethod" style={{marginRight: "20px", marginBottom: "50px"}}>Método de pago:</label>
+        <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentMethodChange}>
+          <option value="webpay">Webpay</option>
+          <option value="wallet">Wallet</option>
+        </select>
+      </div>
       
       {filteredFixtures.length === 0 ? (
         <p>No hay fixtures disponibles en este momento.</p>
