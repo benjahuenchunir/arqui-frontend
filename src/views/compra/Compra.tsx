@@ -5,6 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 import { useModal } from '../../components/Modal/ModalContext';
+import './Compra.scss';
 
 interface Team {
   id: number;
@@ -81,6 +82,19 @@ function Compra() {
   const [paymentMethod, setPaymentMethod] = useState<'wallet' | 'webpay'>('webpay');
   const fixturesPerPage = 10;
   const { showModal } = useModal();
+  const [recomendationStatus, setRecomendationStatus] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchRecomendationStatus = async () => {
+      try {
+        const response = await axios.get<boolean>('/jobs_master/heartbeat');
+        setRecomendationStatus(response.data);
+      } catch (error) {
+        console.error('Error fetching recomendation status:', error);
+      }
+    };
+    void fetchRecomendationStatus();
+  });
 
   useEffect(() => {
     const fetchFixtures = async () => {
@@ -202,6 +216,19 @@ function Compra() {
     <div id="compras-container" style={{color: "white"}}>
       <h1 style={{marginBottom: "50px"}}>Compra de Bonos</h1>
       <div>
+        <label htmlFor="paymentMethod" style={{marginRight: "20px", marginBottom: "50px"}}>Método de pago:</label>
+        <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentMethodChange}>
+          <option value="webpay">Webpay</option>
+          <option value="wallet">Wallet</option>
+        </select>
+      </div>
+
+      <div id='recommended-container'>
+        <h2>Partidos recomendados</h2>
+        <p>Status sistema: {recomendationStatus ? 'Activo' : 'Inactivo'}</p>
+      </div>
+
+      <div>
         <label htmlFor="dateFilter" style={{marginRight: "20px", marginBottom: "50px"}}>Filtrar por fecha:</label>
         <input
           type="date"
@@ -209,13 +236,6 @@ function Compra() {
           value={selectedDate}
           onChange={handleDateFilter}
         />
-      </div>
-      <div>
-        <label htmlFor="paymentMethod" style={{marginRight: "20px", marginBottom: "50px"}}>Método de pago:</label>
-        <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentMethodChange}>
-          <option value="webpay">Webpay</option>
-          <option value="wallet">Wallet</option>
-        </select>
       </div>
       
       {filteredFixtures.length === 0 ? (
