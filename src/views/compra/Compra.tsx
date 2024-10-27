@@ -2,6 +2,8 @@ import '../../index.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
+import { AxiosResponse } from 'axios';
 
 interface Team {
   id: number;
@@ -59,8 +61,16 @@ interface Request {
   uid: string;
 }
 
+interface ResponseData {
+  url?: string;
+  token?: string;
+  amount?: number;
+  price?: number;
+}
+
 function Compra() {
   const { user, loginWithRedirect } = useAuth0();
+  const navigate = useNavigate();
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [bonosSeleccionados, setBonosSeleccionados] = useState<{ [key: number]: number }>({});
   const [apuestaSeleccionada, setApuestaSeleccionada] = useState<{ [key: number]: string | null }>({});
@@ -111,17 +121,22 @@ function Compra() {
     const cantidadBonos = bonosSeleccionados[id] || 1;
     const apuesta = apuestaSeleccionada[id];
 
+    const fixture: Fixture | undefined = fixtures.find(f => f.id === id);
+    if (!fixture) {
+      console.error('Fixture no encontrado.');
+      return;
+    }
+    
     let result: string;
     if (apuesta === 'Local') {
-      const fixture = fixtures.find(f => f.id === id);
       result = fixture ? fixture.home_team.team.name : 'error';
     } else if (apuesta === 'Visita') {
-      const fixture = fixtures.find(f => f.id === id);
       result = fixture ? fixture.away_team.team.name : 'error';
     } else if (apuesta === 'Empate') {
       result = '---';
     } else {
-      result = 'Sin apuesta';
+      console.error('Apuesta no seleccionada.');
+      return
     }
 
     const requestData: Request = {
@@ -132,8 +147,24 @@ function Compra() {
     };
 
     try {
-      const response = await axios.post("/requests", requestData);
+      const response: AxiosResponse<ResponseData> = await axios.post("/requests/frontend", requestData);
       console.log('Compra realizada:', response.data);
+      const data = response.data;
+
+      if (data?.url && data?.token) {
+        navigate(`/confirm-purchase`, {
+            state: {
+              url: data.url,
+              token: data.token,
+              amount: data.amount,
+              title: fixture?.home_team.team.name + ' vs ' + fixture?.away_team.team.name + ' - ' + fixture?.league.name || 'Unknown',
+              price: data.price,
+          }
+        })
+      } else {
+        console.error("Missing url or token")
+      }
+      
     } catch (error) {
       console.error('Error realizando la compra:', error);
     }
