@@ -6,55 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 import { useModal } from '../../components/Modal/ModalContext';
 import './Compra.scss';
-
-interface Team {
-  id: number;
-  name: string;
-  logo_url: string;
-}
-
-interface TeamGoals {
-  goals: number | null;
-  team: Team;
-}
-
-interface League {
-  id: number;
-  name: string;
-  country: string;
-  logo_url: string;
-  flag_url: string;
-  season: number;
-  round: string;
-}
-
-interface OddValue {
-  id: number;
-  value: number;
-  bet: string;
-}
-
-interface Odd {
-  id: number;
-  name: string;
-  values: OddValue[];
-}
-
-interface Fixture {
-  id: number;
-  referee: string | null;
-  timezone: string;
-  date: string;
-  timestamp: number;
-  status_long: string;
-  status_short: string;
-  status_elapsed: number | null;
-  home_team: TeamGoals;
-  away_team: TeamGoals;
-  league: League;
-  odds: Odd[];
-  remaining_bets: number;
-}
+import { Fixture, OddValue } from '../../types/backend.ts';
+import { FixtureCard } from './FixtureCard.tsx';
 
 interface Request {
   fixture_id: number;
@@ -83,6 +36,8 @@ function Compra() {
   const fixturesPerPage = 10;
   const { showModal } = useModal();
   const [recomendationStatus, setRecomendationStatus] = useState<boolean>(false);
+  const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<boolean>(false); // TODO RNF02, RF02, RF01
+  const [recommendedFixtures, setRecommendedFixtures] = useState<Fixture[]>([]); // TODO buscar recomendaciones y pasarselas al estado (html esta listo)
 
   useEffect(() => {
     const fetchRecomendationStatus = async () => {
@@ -101,8 +56,8 @@ function Compra() {
       try {
         const response = await axios.get<Fixture[]>(`/fixtures/available?page=${page}&count=${fixturesPerPage}`);
         if (response.data.length === 0 && page > 0) {
-            setPage(page - 1)
-            return;
+          setPage(page - 1)
+          return;
         }
         setFixtures(response.data);
         setFilteredFixtures(response.data);
@@ -113,17 +68,17 @@ function Compra() {
     void fetchFixtures();
   }, [page]);
 
-    // Filtrar por fecha
-    const handleDateFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const selected = event.target.value;
-      setSelectedDate(selected);
-      if (selected) {
-        setFilteredFixtures(fixtures.filter(fixture => fixture.date.includes(selected)));
-      } else {
-        setFilteredFixtures(fixtures);
-      }
-    };
-  
+  // Filtrar por fecha
+  const handleDateFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = event.target.value;
+    setSelectedDate(selected);
+    if (selected) {
+      setFilteredFixtures(fixtures.filter(fixture => fixture.date.includes(selected)));
+    } else {
+      setFilteredFixtures(fixtures);
+    }
+  };
+
   const findMatchWinnerOdd = (fixture: Fixture, team: string): OddValue | null => {
     const odd = fixture.odds.find((odd) => odd.name === 'Match Winner');
     return odd?.values.find((value) => value.bet === team) || null;
@@ -143,7 +98,7 @@ function Compra() {
       console.error('Fixture no encontrado.');
       return;
     }
-    
+
     let result: string;
     if (apuesta === 'Local') {
       result = fixture ? fixture.home_team.team.name : 'error';
@@ -171,24 +126,22 @@ function Compra() {
 
         if (data?.url && data?.token) {
           navigate(`/confirm-purchase`, {
-              state: {
-                url: data.url,
-                token: data.token,
-                amount: data.amount,
-                title: fixture?.home_team.team.name + ' vs ' + fixture?.away_team.team.name + ' - ' + fixture?.league.name || 'Unknown',
-                price: data.price,
+            state: {
+              url: data.url,
+              token: data.token,
+              amount: data.amount,
+              title: fixture?.home_team.team.name + ' vs ' + fixture?.away_team.team.name + ' - ' + fixture?.league.name || 'Unknown',
+              price: data.price,
             }
           })
         } else {
           console.error("Missing url or token")
         }
       } else if (paymentMethod === 'wallet') {
-        // TODO call backend to make the purchase
+        // TODO call backend to make the purchase using wallet
         showModal('Compra realizada con éxito', 'success');
-        // const response: AxiosResponse<ResponseData> = await axios.post("/requests/wallet-payment", requestData);
-        // console.log('Compra realizada con Wallet:', response.data);
       }
-      
+
     } catch (error) {
       console.error('Error realizando la compra:', error);
     }
@@ -212,11 +165,15 @@ function Compra() {
     setPaymentMethod(event.target.value as 'webpay' | 'wallet');
   };
 
+  const handleComprarWrapper = (id: number) => {
+    void handleComprar(id);
+  };
+
   return (
-    <div id="compras-container" style={{color: "white"}}>
-      <h1 style={{marginBottom: "50px"}}>Compra de Bonos</h1>
+    <div id="compras-container" style={{ color: "white" }}>
+      <h1 style={{ marginBottom: "50px" }}>Compra de Bonos</h1>
       <div>
-        <label htmlFor="paymentMethod" style={{marginRight: "20px", marginBottom: "50px"}}>Método de pago:</label>
+        <label htmlFor="paymentMethod" style={{ marginRight: "20px", marginBottom: "50px" }}>Método de pago:</label>
         <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentMethodChange}>
           <option value="webpay">Webpay</option>
           <option value="wallet">Wallet</option>
@@ -225,11 +182,29 @@ function Compra() {
 
       <div id='recommended-container'>
         <h2>Partidos recomendados</h2>
-        <p>Status sistema: {recomendationStatus ? 'Activo' : 'Inactivo'}</p>
+        <div className='info-container'>
+          <p>Status sistema: {recomendationStatus ? 'Activo' : 'Inactivo'}</p>
+          <p>Calculado el {lastRecommendationCalculation}</p>
+        </div>
+        <div className='fixtures-container'>
+          {recommendedFixtures.length === 0 && <p>No hay partidos recomendados en este momento.</p>}
+          {recommendedFixtures.map((fixture) => (
+            <FixtureCard
+              key={fixture.id}
+              fixture={fixture}
+              apuestaSeleccionada={apuestaSeleccionada}
+              bonosSeleccionados={bonosSeleccionados}
+              handleApuestaChange={handleApuestaChange}
+              handleBonosChange={handleBonosChange}
+              handleComprar={handleComprarWrapper}
+              findMatchWinnerOdd={findMatchWinnerOdd}
+            />
+          ))}
+        </div>
       </div>
 
       <div>
-        <label htmlFor="dateFilter" style={{marginRight: "20px", marginBottom: "50px"}}>Filtrar por fecha:</label>
+        <label htmlFor="dateFilter" style={{ marginRight: "20px", marginBottom: "50px" }}>Filtrar por fecha:</label>
         <input
           type="date"
           id="dateFilter"
@@ -237,64 +212,23 @@ function Compra() {
           onChange={handleDateFilter}
         />
       </div>
-      
+
       {filteredFixtures.length === 0 ? (
         <p>No hay fixtures disponibles en este momento.</p>
       ) : (
         <div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
             {fixtures.map((fixture) => (
-              <div key={fixture.id} className="compra-item">
-                <p><strong>Liga:</strong> {fixture.league.name}</p>
-                <p><strong>Local:</strong> {fixture.home_team.team.name}</p>
-                <p><strong>Visita:</strong> {fixture.away_team.team.name}</p>
-                <p><strong>Referee:</strong> {fixture.referee}</p>
-                <p><strong>Fecha:</strong> {fixture.date}</p>
-                <p><strong>Bonos disponibles:</strong> {fixture.remaining_bets}</p>
-
-                <div className="apuestas-container">
-                  <div className="apuesta-item">
-                    <p><strong>Gana {fixture.home_team.team.name}:</strong> {findMatchWinnerOdd(fixture, 'Home')?.value}</p>
-                    <button
-                      className={apuestaSeleccionada[fixture.id] === 'Local' ? 'selected' : ''}
-                      onClick={() => handleApuestaChange(fixture.id, 'Local')}
-                    >
-                      Gana Local
-                    </button>
-                  </div>
-                  <div className="apuesta-item">
-                    <p><strong>Empate:</strong> {findMatchWinnerOdd(fixture, 'Draw')?.value}</p>
-                    <button
-                      className={apuestaSeleccionada[fixture.id] === 'Empate' ? 'selected' : ''}
-                      onClick={() => handleApuestaChange(fixture.id, 'Empate')}
-                    >
-                      Empate
-                    </button>
-                  </div>
-                  <div className="apuesta-item">
-                    <p><strong>Gana {fixture.away_team.team.name}:</strong> {findMatchWinnerOdd(fixture, 'Away')?.value}</p>
-                    <button
-                      className={apuestaSeleccionada[fixture.id] === 'Visita' ? 'selected' : ''}
-                      onClick={() => handleApuestaChange(fixture.id, 'Visita')}
-                    >
-                      Gana Visita
-                    </button>
-                  </div>
-                </div>
-
-                <label htmlFor={`bonos-${fixture.id}`}>Selecciona cantidad de bonos (1 a {fixture.remaining_bets}):</label>
-                <input
-                  type="number"
-                  id={`bonos-${fixture.id}`}
-                  name="bonos"
-                  min="1"
-                  max={fixture.remaining_bets}
-                  value={bonosSeleccionados[fixture.id] || 1}
-                  onChange={(e) => handleBonosChange(fixture.id, parseInt(e.target.value))}
-                />
-
-                <button onClick={() => void handleComprar(fixture.id)}>Comprar</button>
-              </div>
+              <FixtureCard
+                key={fixture.id}
+                fixture={fixture}
+                apuestaSeleccionada={apuestaSeleccionada}
+                bonosSeleccionados={bonosSeleccionados}
+                handleApuestaChange={handleApuestaChange}
+                handleBonosChange={handleBonosChange}
+                handleComprar={handleComprarWrapper}
+                findMatchWinnerOdd={findMatchWinnerOdd}
+              />
             ))}
           </div>
 

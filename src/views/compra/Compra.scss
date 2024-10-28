@@ -5,6 +5,18 @@
     align-items: center;
     vertical-align: top;
     min-height: 10vh;
+
+    #recommended-container {
+        .info-container {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .fixtures-container {
+            display: flex;
+            gap: 1rem;
+        }
+    }
     
     .compra-item {
         text-align: left;
