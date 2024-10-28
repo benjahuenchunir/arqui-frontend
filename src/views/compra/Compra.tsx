@@ -36,8 +36,21 @@ function Compra() {
   const fixturesPerPage = 10;
   const { showModal } = useModal();
   const [recomendationStatus, setRecomendationStatus] = useState<boolean>(false);
-  const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<boolean>(false); // TODO RNF02, RF02, RF01
+  const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<Date>(); // TODO RNF02, RF02, RF01
   const [recommendedFixtures, setRecommendedFixtures] = useState<Fixture[]>([]); // TODO buscar recomendaciones y pasarselas al estado (html esta listo)
+
+  useEffect(() => {
+    const fetchRecommendedFixtures = async () => {
+      try {
+        // const response = await axios.get<Fixture[]>('/fixtures/recommended');
+        setRecommendedFixtures([]); // TODO RNF02, RF02, RF01
+        setLastRecommendationCalculation(new Date());
+      } catch (error) {
+        console.error('Error fetching recommended fixtures:', error);
+      }
+    };
+    void fetchRecommendedFixtures();
+  }
 
   useEffect(() => {
     const fetchRecomendationStatus = async () => {
