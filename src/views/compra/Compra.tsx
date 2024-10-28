@@ -50,7 +50,7 @@ function Compra() {
       }
     };
     void fetchRecommendedFixtures();
-  })
+  }, [])
 
   useEffect(() => {
     const fetchRecomendationStatus = async () => {
@@ -62,7 +62,7 @@ function Compra() {
       }
     };
     void fetchRecomendationStatus();
-  });
+  }, []);
 
   useEffect(() => {
     const fetchFixtures = async () => {
