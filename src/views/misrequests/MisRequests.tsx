@@ -47,6 +47,7 @@ function MisRequests() {
               <p><strong>Liga:</strong> {request.league_name}</p>
               <p><strong>Resultado:</strong> {request.result}</p>
               <p><strong>Estado:</strong> {request.status}</p>
+              <button>Descargar boleta</button> {/* TODO RF05 */}
             </li>
           ))}
         </ul>
