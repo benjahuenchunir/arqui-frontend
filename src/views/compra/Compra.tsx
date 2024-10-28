@@ -23,6 +23,11 @@ interface ResponseData {
   price?: number;
 }
 
+interface RecommendedData {
+  fixtures: Fixture[];
+  last_updated: Date;
+}
+
 function Compra() {
   const { user, loginWithRedirect } = useAuth0();
   const navigate = useNavigate();
@@ -36,15 +41,15 @@ function Compra() {
   const fixturesPerPage = 10;
   const { showModal } = useModal();
   const [recomendationStatus, setRecomendationStatus] = useState<boolean>(false);
-  const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<Date | null>(null); // TODO RNF02, RF02, RF01
-  const [recommendedFixtures, setRecommendedFixtures] = useState<Fixture[]>([]); // TODO buscar recomendaciones y pasarselas al estado (html esta listo)
+  const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<Date | null>(null);
+  const [recommendedFixtures, setRecommendedFixtures] = useState<Fixture[]>([]);
 
   useEffect(() => {
-    const fetchRecommendedFixtures = () => {
+    const fetchRecommendedFixtures = async () => {
       try {
-        // const response = await axios.get<Fixture[]>('/fixtures/recommended');
-        setRecommendedFixtures([]); // TODO RNF02, RF02, RF01
-        setLastRecommendationCalculation(new Date());
+        const response = await axios.get<RecommendedData>('/fixtures/recommended');
+        setRecommendedFixtures(response.data.fixtures);
+        setLastRecommendationCalculation(response.data.last_updated);
       } catch (error) {
         console.error('Error fetching recommended fixtures:', error);
       }
