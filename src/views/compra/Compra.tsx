@@ -40,7 +40,7 @@ function Compra() {
   const [recommendedFixtures, setRecommendedFixtures] = useState<Fixture[]>([]); // TODO buscar recomendaciones y pasarselas al estado (html esta listo)
 
   useEffect(() => {
-    const fetchRecommendedFixtures = async () => {
+    const fetchRecommendedFixtures = () => {
       try {
         // const response = await axios.get<Fixture[]>('/fixtures/recommended');
         setRecommendedFixtures([]); // TODO RNF02, RF02, RF01
@@ -50,7 +50,7 @@ function Compra() {
       }
     };
     void fetchRecommendedFixtures();
-  }
+  })
 
   useEffect(() => {
     const fetchRecomendationStatus = async () => {
