@@ -36,7 +36,7 @@ function Compra() {
   const fixturesPerPage = 10;
   const { showModal } = useModal();
   const [recomendationStatus, setRecomendationStatus] = useState<boolean>(false);
-  const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<Date>(); // TODO RNF02, RF02, RF01
+  const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<Date | null>(null); // TODO RNF02, RF02, RF01
   const [recommendedFixtures, setRecommendedFixtures] = useState<Fixture[]>([]); // TODO buscar recomendaciones y pasarselas al estado (html esta listo)
 
   useEffect(() => {
@@ -197,7 +197,7 @@ function Compra() {
         <h2>Partidos recomendados</h2>
         <div className='info-container'>
           <p>Status sistema: {recomendationStatus ? 'Activo' : 'Inactivo'}</p>
-          <p>Calculado el {lastRecommendationCalculation}</p>
+          <p>Calculado el {lastRecommendationCalculation?.toLocaleString()}</p>
         </div>
         <div className='fixtures-container'>
           {recommendedFixtures.length === 0 && <p>No hay partidos recomendados en este momento.</p>}
