@@ -16,7 +16,7 @@ function ConfirmPurchase() {
   console.log(data);
   return (
     <div className="confirmar-compra-container">
-      <p className="title">Confirmar compra</p>
+      <p className="title">Confirmar Compra</p>
       <form className="form" action={data.url} method="POST">
         <input className="hidden-input" type="hidden" name="token_ws" value={data.token} />
         <div className="details">
