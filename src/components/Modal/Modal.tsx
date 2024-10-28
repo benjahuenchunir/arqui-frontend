@@ -11,7 +11,7 @@ const Modal: React.FC = () => {
     <div className={`modal ${modalType}`}>
       <div className="modal-content">
         <span className="close" onClick={hideModal}>&times;</span>
-        <p>{modalMessage}</p>
+        <p className='nota'>{modalMessage}</p>
       </div>
     </div>
   );
