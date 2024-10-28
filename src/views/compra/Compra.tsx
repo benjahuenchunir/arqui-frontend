@@ -149,7 +149,7 @@ function Compra() {
   const handleApuestaChange = (id: number, apuesta: string) => {
     setApuestaSeleccionada((prevState) => ({
       ...prevState,
-      [id]: prevState[id] === apuesta ? null : apuesta,  // Deseleccionar si ya está seleccionado
+      [id]: prevState[id] === apuesta ? null : apuesta,
     }));
   };
 
@@ -177,7 +177,7 @@ function Compra() {
                 <p><strong>Liga:</strong> {fixture.league.name}</p>
                 <p><strong>Local:</strong> {fixture.home_team.team.name}</p>
                 <p><strong>Visita:</strong> {fixture.away_team.team.name}</p>
-                <p><strong>Referee:</strong> {fixture.referee}</p>
+                <p><strong>Arbitro:</strong> {fixture.referee}</p>
                 <p><strong>Fecha:</strong> {fixture.date}</p>
                 <p><strong>Bonos disponibles:</strong> {fixture.remaining_bets}</p>
 
