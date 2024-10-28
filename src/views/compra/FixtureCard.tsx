@@ -48,6 +48,7 @@ export function FixtureCard(
 
             <label htmlFor={`bonos-${fixture.id}`}>Selecciona cantidad de bonos (1 a {fixture.remaining_bets}):</label>
             <input
+                className='comprar-input'
                 type="number"
                 id={`bonos-${fixture.id}`}
                 name="bonos"
@@ -57,7 +58,7 @@ export function FixtureCard(
                 onChange={(e) => handleBonosChange(fixture.id, parseInt(e.target.value))}
             />
 
-            <button onClick={() => void handleComprar(fixture.id)}>Comprar</button>
+            <button className='comprar-button' onClick={() => void handleComprar(fixture.id)}>Comprar</button>
         </div>
     )
 }
