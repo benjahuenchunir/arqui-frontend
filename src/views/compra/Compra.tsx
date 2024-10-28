@@ -120,7 +120,7 @@ function Compra() {
 
     try {
       if (paymentMethod === 'webpay') {
-        const response: AxiosResponse<ResponseData> = await axios.post("/requests/frontend", requestData);
+        const response: AxiosResponse<ResponseData> = await axios.post("/requests/webpay", requestData);
         console.log('Compra realizada:', response.data);
         const data = response.data;
 
@@ -138,12 +138,13 @@ function Compra() {
           console.error("Missing url or token")
         }
       } else if (paymentMethod === 'wallet') {
-        // TODO call backend to make the purchase using wallet
+        const response: AxiosResponse<ResponseData> = await axios.post("/requests/wallet", requestData);
+        console.log('Compra realizada:', response.data);
         showModal('Compra realizada con éxito', 'success');
       }
-
     } catch (error) {
       console.error('Error realizando la compra:', error);
+      showModal('Error realizando la compra', 'error');
     }
   };
 
