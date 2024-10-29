@@ -23,7 +23,7 @@ function ConfirmPurchase() {
           <p className="detail-title">{data.title}</p>
           <p className="detail-item">Cantidad: {data.amount}</p>
         </div>
-        <button className="submit-button" type="submit">Pagar ${data.price * data.amount}</button>
+        <button className="submit-button" type="submit">Pagar ${data.price}</button>
       </form>
     </div>
   );

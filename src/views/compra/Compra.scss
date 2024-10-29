@@ -35,18 +35,20 @@
     display: flex;
     justify-content: space-between; /* Alinear horizontalmente */
     margin: 10px 0;
+    align-items: flex-end;
     }
     
     .apuesta-item {
     text-align: center;
     flex: 1; /* Ocupa el mismo espacio cada botón */
+    margin: 10px;
     }
     
     .apuesta-item button {
     padding: 10px;
     margin-top: 5px;
     width: 100%;
-    background-color: #f0f0f0;
+    background-color: #7CBAF3;
     border: 1px solid #ccc;
     cursor: pointer;
     }
@@ -60,6 +62,14 @@
     .apuesta-item button:hover {
     background-color: #0056b3;
     color: white;
+    }
+
+    .comprar-button {
+    margin-left: 30px;
+    }
+
+    .comprar-input {
+        margin: 10px;
     }
       
 }
