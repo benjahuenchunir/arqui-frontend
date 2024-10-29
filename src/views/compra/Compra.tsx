@@ -47,7 +47,7 @@ function Compra() {
   useEffect(() => {
     const fetchRecommendedFixtures = async () => {
       try {
-        const response = await axios.get<RecommendedData>('/fixtures/recommended');
+        const response = await axios.get<RecommendedData>(`/fixtures/recommended/${user?.sub}`);
         setRecommendedFixtures(response.data.fixtures);
         setLastRecommendationCalculation(response.data.last_updated);
       } catch (error) {
