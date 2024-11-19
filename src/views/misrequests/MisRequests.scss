@@ -1,0 +1,35 @@
+#requests-container {
+  color: white;
+  text-align: center;
+}
+
+.requests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.compra-item {
+  background-color: #1e2a38;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.compra-item p {
+  margin: 10px 0;
+}
+
+.compra-item button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.compra-item button:hover {
+  background-color: #0056b3;
+}

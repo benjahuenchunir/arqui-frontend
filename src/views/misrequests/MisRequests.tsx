@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import "./MisRequests.scss";
 
 interface Requests {
   request_id: string;
@@ -11,6 +11,9 @@ interface Requests {
   url_boleta: string;
 }
 
+const BACKEND_PROTOCOL = import.meta.env.VITE_BACKEND_PROTOCOL as string;
+const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST as string;
+
 function MisRequests() {
   const { user } = useAuth0();
   const [requests, setRequests] = useState<Requests[]>([]);
@@ -20,16 +23,31 @@ function MisRequests() {
       return;
     }
 
-    const fetchRequests = async () => {
-      try {
-        const response = await axios.get<Requests[]>(`/requests/${user.sub}`);
-        setRequests(response.data);
-      } catch (error) {
-        console.error('Error fetching matches:', error);
-      }
+    const ws = new WebSocket(`${BACKEND_PROTOCOL}://${BACKEND_HOST}/requests/${user.sub}`);
+
+    ws.onopen = () => {
+      console.log('WebSocket connection established');
     };
 
-    void fetchRequests();
+    ws.onmessage = (event) => {
+      console.log(event);
+      const requests = event.data;
+      setRequests(JSON.parse(requests));
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
   }, [user]);
 
   if (!user) {
@@ -47,21 +65,21 @@ function MisRequests() {
   };
 
   return (
-    <div id="requests-container" style={{color: "white", textAlign: "center"}}>
+    <div id="requests-container" style={{ color: "white", textAlign: "center" }}>
       <h1>Listado de mis Requests</h1>
       {requests.length === 0 ? (
         <p>No tienes requests en este momento.</p>
       ) : (
-        <ul>
+        <div className="requests-grid">
           {requests.map((request) => (
-            <li key={request.request_id} className="compra-item">
+            <div key={request.request_id} className="compra-item">
               <p><strong>Liga:</strong> {request.league_name}</p>
               <p><strong>Resultado:</strong> {request.result}</p>
               <p><strong>Estado:</strong> {request.status}</p>
               <button onClick={() => handleDescargarBoleta(request.request_id)}>Descargar Boleta</button>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
