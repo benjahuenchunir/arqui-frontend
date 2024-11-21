@@ -14,6 +14,8 @@ import NavBar from "./components/NavBar/NavBar";
 import ConfirmPurchase from "./views/compra/ConfirmarCompra";
 import PurchaseCompleted from "./views/compra/PurchaseCompleted";
 import Modal from './components/Modal/Modal';
+import Dashboard from './views/admin/Dashboard';
+import { AdminGuard } from './components/AdminGuard';
 
 const App = () => {
   const { isLoading } = useAuth0();
@@ -45,9 +47,10 @@ const App = () => {
             element={<AuthenticationGuard component={Wallet} />}
           />
           <Route path="/procesocompra" element={<ProcesoDeCompras />} />
-          <Route path="*" element={<NotFound />} />
           <Route path="/confirm-purchase" element={<ConfirmPurchase />} />
           <Route path="/completed-purchase" element={<PurchaseCompleted />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/admin" element={<AdminGuard component={Dashboard} />} />
         </Routes>
       </div>
       <Modal />

@@ -6,6 +6,8 @@ import { Fade } from '@mui/material';
 function Profile() {
   const { user } = useAuth0();
 
+  console.log(user)
+
   useEffect(() => {
     const sendSignupData = async () => {
       if (user) {
