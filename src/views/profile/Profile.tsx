@@ -8,12 +8,14 @@ function Profile() {
 
   console.log(user)
 
+  const isAdmin = user && user['arqui-roles']?.includes('admin');
+
   useEffect(() => {
     const sendSignupData = async () => {
       if (user) {
         // TODO this would ideally be a post signup trigger but this is easier
         try {
-          await axios.post("/signup", { uid: user.sub, email: user.email });
+          await axios.post("/signup", { uid: user.sub, email: user.email, admin: isAdmin});
           console.log('Successfully sent signup data to backend, uid: ', user.sub);
         } catch (error) {
           console.error('Error sending signup data to backend:', error);
@@ -22,7 +24,7 @@ function Profile() {
     };
 
     void sendSignupData();
-  }, [user]);
+  }, [user, isAdmin]);
 
   if (!user) {
     return null;
