@@ -71,7 +71,7 @@ export function FixtureCard(
                 onChange={(e) => handleBonosChange(fixture.id, parseInt(e.target.value))}
             />
 
-            <button className='comprar-button' onClick={() => void handleComprar(fixture.id)}>Comprar</button>
+            <button className='comprar-button' onClick={() => void handleComprar(fixture.id)}>Ofrecer</button>
         </div>
     )
 }

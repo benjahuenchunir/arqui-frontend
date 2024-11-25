@@ -2,8 +2,8 @@ import '../../index.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useModal } from '../../components/Modal/ModalContext';
-import './Dashboard.scss';
+import { useModal } from '../../components/Modal/ModalContext.tsx';
+import './Ofrecer.scss';
 import { Fixture, OddValue } from '../../types/backend.ts';
 import { FixtureCard } from './FixtureCard.tsx';
 
@@ -94,7 +94,7 @@ function Dashboard() {
     };
 
     try {
-      await axios.post("/auctions/offer", requestData);
+      await axios.post("/auctions/offers", requestData);
       showModal('Oferta realizada con éxito', 'success');
     } catch (error) {
       console.error('Error realizando la oferta:', error);

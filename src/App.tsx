@@ -14,7 +14,8 @@ import NavBar from "./components/NavBar/NavBar";
 import ConfirmPurchase from "./views/compra/ConfirmarCompra";
 import PurchaseCompleted from "./views/compra/PurchaseCompleted";
 import Modal from './components/Modal/Modal';
-import Dashboard from './views/admin/Dashboard';
+import Ofrecer from './views/admin/Ofrecer';
+import Comprar from './views/admin/Comprar';
 import { AdminGuard } from './components/AdminGuard';
 
 const App = () => {
@@ -50,7 +51,8 @@ const App = () => {
           <Route path="/confirm-purchase" element={<ConfirmPurchase />} />
           <Route path="/completed-purchase" element={<PurchaseCompleted />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/admin" element={<AdminGuard component={Dashboard} />} />
+          <Route path="/admin/comprar" element={<AdminGuard component={Comprar} />} />
+          <Route path="/admin/ofrecer" element={<AdminGuard component={Ofrecer} />} />
         </Routes>
       </div>
       <Modal />
