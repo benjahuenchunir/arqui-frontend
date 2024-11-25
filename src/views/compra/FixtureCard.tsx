@@ -1,9 +1,9 @@
 import { Fixture, OddValue } from '../../types/backend';
 
 export function FixtureCard(
-    { fixture, apuestaSeleccionada, bonosSeleccionados, handleApuestaChange, handleBonosChange, handleComprar, findMatchWinnerOdd }
+    { fixture, apuestaSeleccionada, bonosSeleccionados, handleApuestaChange, handleBonosChange, handleComprar, handleComprarReserved, findMatchWinnerOdd }
         : {
-            fixture: Fixture, apuestaSeleccionada: { [key: number]: string | null }, bonosSeleccionados: Record<number, number>, handleApuestaChange: (id: number, apuesta: string) => void, handleBonosChange: (id: number, bonos: number) => void, handleComprar: (id: number) => void,
+            fixture: Fixture, apuestaSeleccionada: { [key: number]: string | null }, bonosSeleccionados: Record<number, number>, handleApuestaChange: (id: number, apuesta: string) => void, handleBonosChange: (id: number, bonos: number) => void, handleComprar: (id: number) => void, handleComprarReserved: (id: number) => void,
             findMatchWinnerOdd: (fixture: Fixture, team: string) => OddValue | null
         }
 ) {
@@ -59,6 +59,7 @@ export function FixtureCard(
             />
 
             <button className='comprar-button' onClick={() => void handleComprar(fixture.id)}>Comprar</button>
+            <button className='comprar-button' onClick={() => void handleComprarReserved(fixture.id)}>Comprar reservados</button>
         </div>
     )
 }
