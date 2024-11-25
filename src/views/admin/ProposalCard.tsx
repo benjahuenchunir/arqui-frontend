@@ -6,18 +6,19 @@ interface OfferCardProps {
   result: string;
   quantity: number;
   groupId: string | number;
-  auction_id: string | number;
-  onComprar: (groupId: string | number) => void;
+  onAccept: (groupId: string | number) => void;
+  onReject: (groupId: string | number) => void;
 }
 
-const OfferCard: React.FC<OfferCardProps> = ({ league, round, result, quantity, groupId, onComprar, auction_id }) => {
+const OfferCard: React.FC<OfferCardProps> = ({ league, round, result, quantity, groupId, onAccept, onReject }) => {
   return (
     <div className="offer-card">
       <h3>{league}</h3>
       <p>Round: {round}</p>
       <p>Result: {result}</p>
       <p>Quantity: {quantity}</p>
-      <button onClick={() => onComprar(auction_id)}>Comprar</button>
+      <button onClick={() => onAccept(groupId)}>Aceptar</button>
+      <button onClick={() => onReject(groupId)}>Rechazar</button>
     </div>
   );
 };

@@ -29,6 +29,11 @@ export const NavBarButtons = () => {
                             Ofrecer
                         </Link>
                     )}
+                    {isAdmin && (
+                        <Link className="nav-link" to="/admin/propuestas" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
+                            Propuestas
+                        </Link>
+                    )}
                     <Link className="nav-link" to="/procesocompra" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
                         Mis Apuestas
                     </Link>

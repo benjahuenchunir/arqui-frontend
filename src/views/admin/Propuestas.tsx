@@ -1,9 +1,7 @@
-import "./Comprar.scss"
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-import OfferCard from './OfferCard';
-import { useNavigate } from "react-router-dom";
+import ProposalCard from './ProposalCard';
 
 interface Offer {
   league_name: string;
@@ -11,12 +9,10 @@ interface Offer {
   result: string;
   quantity: number;
   group_id: string | number;
-  auction_id: string | number;
 }
 
 const Comprar = () => {
   const { user } = useAuth0();
-  const navigate = useNavigate();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +20,7 @@ const Comprar = () => {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await axios.get(`/auctions/offers?user_id=${user?.sub}`);
+        const response = await axios.get(`/auctions/proposals?user_id=${user?.sub}`);
         setOffers(response.data);
         setLoading(false);
       } catch (err) {
@@ -36,9 +32,13 @@ const Comprar = () => {
     fetchOffers();
   }, []);
 
-  const onComprar = (auction_id: string | number) => {
-    navigate(`/admin/ofrecer?auction_id=${auction_id}`);
-  }
+  const onAccept = (groupId: string | number) => {
+    console.log(`Accepting proposal for group ${groupId}`);
+    }
+
+    const onReject = (groupId: string | number) => {
+    console.log(`Rejecting proposal for group ${groupId}`);
+    }
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -46,15 +46,15 @@ const Comprar = () => {
   return (
     <div className="offers-container">
       {offers.map((offer) => (
-        <OfferCard
-          key={`${offer.group_id}-${offer.auction_id}`}
+        <ProposalCard
+          key={`${offer.group_id}-${offer.round}`}
           league={offer.league_name}
           round={offer.round}
           result={offer.result}
           quantity={offer.quantity}
           groupId={offer.group_id}
-          auction_id={offer.auction_id}
-          onComprar={onComprar}
+          onAccept={(group_id) => void onAccept(group_id)}
+          onReject={(group_id) => void onReject(group_id)}
         />
       ))}
     </div>
