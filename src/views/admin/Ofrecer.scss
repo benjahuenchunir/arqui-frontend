@@ -1,0 +1,75 @@
+#compras-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    vertical-align: top;
+    min-height: 10vh;
+
+    #recommended-container {
+        .info-container {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .fixtures-container {
+            display: flex;
+            gap: 1rem;
+        }
+    }
+    
+    .compra-item {
+        text-align: left;
+        background-color: #093660;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+      }
+      
+    .compra-item p {
+    margin: 0.5rem 0;
+    }
+    
+    /* Estilos de la vista de Compra */
+    .apuestas-container {
+    display: flex;
+    justify-content: space-between; /* Alinear horizontalmente */
+    margin: 10px 0;
+    align-items: flex-end;
+    }
+    
+    .apuesta-item {
+    text-align: center;
+    flex: 1; /* Ocupa el mismo espacio cada botón */
+    margin: 10px;
+    }
+    
+    .apuesta-item button {
+    padding: 10px;
+    margin-top: 5px;
+    width: 100%;
+    background-color: #7CBAF3;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    }
+    
+    .apuesta-item button.selected {
+    background-color: #007bff; /* Color del botón seleccionado */
+    color: white;
+    border-color: #0056b3;
+    }
+    
+    .apuesta-item button:hover {
+    background-color: #0056b3;
+    color: white;
+    }
+
+    .comprar-button {
+    margin-left: 30px;
+    }
+
+    .comprar-input {
+        margin: 10px;
+    }
+      
+}

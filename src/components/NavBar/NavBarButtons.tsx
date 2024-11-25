@@ -20,8 +20,18 @@ export const NavBarButtons = () => {
             {isAuthenticated && (
                 <>
                     {isAdmin && (
-                        <Link className="nav-link" to="/admin" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
-                            Admin Dashboard
+                        <Link className="nav-link" to="/admin/comprar" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
+                            Comprar
+                        </Link>
+                    )}
+                    {isAdmin && (
+                        <Link className="nav-link" to="/admin/ofrecer" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
+                            Ofrecer
+                        </Link>
+                    )}
+                    {isAdmin && (
+                        <Link className="nav-link" to="/admin/propuestas" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
+                            Propuestas
                         </Link>
                     )}
                     <Link className="nav-link" to="/procesocompra" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
