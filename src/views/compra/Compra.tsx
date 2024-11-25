@@ -44,6 +44,8 @@ function Compra() {
   const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<Date | null>(null);
   const [recommendedFixtures, setRecommendedFixtures] = useState<Fixture[]>([]);
 
+  const isAdmin = user && user['arqui-roles']?.includes('admin');
+
   useEffect(() => {
     const fetchRecommendedFixtures = async () => {
       try {
@@ -165,6 +167,48 @@ function Compra() {
     }
   };
 
+  const handleComprarReserved = async (id: number) => {
+    if (!user) {
+      await loginWithRedirect();
+      return;
+    }
+
+    const cantidadBonos = bonosSeleccionados[id] || 1;
+    const apuesta = apuestaSeleccionada[id];
+
+    const fixture: Fixture | undefined = fixtures.find(f => f.id === id);
+    if (!fixture) {
+      console.error('Fixture no encontrado.');
+      return;
+    }
+
+    let result: string;
+    if (apuesta === 'Local') {
+      result = fixture ? fixture.home_team.team.name : 'error';
+    } else if (apuesta === 'Visita') {
+      result = fixture ? fixture.away_team.team.name : 'error';
+    } else if (apuesta === 'Empate') {
+      result = '---';
+    } else {
+      console.error('Apuesta no seleccionada.');
+      return
+    }
+
+    const requestData: Request = {
+      fixture_id: id,
+      result: result,
+      quantity: cantidadBonos,
+      uid: user.sub || 'error',
+    };
+
+    try {
+      await axios.post("/requests/reserved", requestData);
+      showModal('Compra realizada con éxito', 'success');
+    } catch (error) {
+      console.error('Error realizando la compra:', error);
+    }
+  };
+
   const handleBonosChange = (id: number, value: number) => {
     setBonosSeleccionados((prevState) => ({
       ...prevState,
@@ -186,10 +230,15 @@ function Compra() {
   const handleComprarWrapper = (id: number) => {
     void handleComprar(id);
   };
+  
+  const handleComprarReservedWrapper = (id: number) => {
+    void handleComprarReserved(id);
+  };
 
   return (
     <div id="compras-container" style={{ color: "white" }}>
       <h1 style={{ marginBottom: "50px" }}>Compra de Bonos</h1>
+      <p>Los reservados tienen 10% de descuento!!!</p>
       <div>
         <label htmlFor="paymentMethod" style={{ marginRight: "20px", marginBottom: "50px" }}>Método de pago:</label>
         <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentMethodChange}>
@@ -215,7 +264,9 @@ function Compra() {
               handleApuestaChange={handleApuestaChange}
               handleBonosChange={handleBonosChange}
               handleComprar={handleComprarWrapper}
+              handleComprarReserved={handleComprarReservedWrapper}
               findMatchWinnerOdd={findMatchWinnerOdd}
+              isAdmin={isAdmin}
             />
           ))}
         </div>
@@ -246,6 +297,8 @@ function Compra() {
                 handleBonosChange={handleBonosChange}
                 handleComprar={handleComprarWrapper}
                 findMatchWinnerOdd={findMatchWinnerOdd}
+                handleComprarReserved={handleComprarReservedWrapper}
+                isAdmin={isAdmin}
               />
             ))}
           </div>

@@ -5,7 +5,9 @@ import { SignupButton } from "../SignUpButton";
 import { Link } from "react-router-dom";
 
 export const NavBarButtons = () => {
-    const { isAuthenticated } = useAuth0();
+    const { user, isAuthenticated } = useAuth0();
+
+    const isAdmin = user && user['arqui-roles']?.includes('admin');
 
     return (
         <div className="nav-bar__buttons d-flex align-items-center ms-auto">
@@ -17,6 +19,21 @@ export const NavBarButtons = () => {
             )}
             {isAuthenticated && (
                 <>
+                    {isAdmin && (
+                        <Link className="nav-link" to="/admin/comprar" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
+                            Comprar
+                        </Link>
+                    )}
+                    {isAdmin && (
+                        <Link className="nav-link" to="/admin/ofrecer" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
+                            Ofrecer
+                        </Link>
+                    )}
+                    {isAdmin && (
+                        <Link className="nav-link" to="/admin/propuestas" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
+                            Propuestas
+                        </Link>
+                    )}
                     <Link className="nav-link" to="/procesocompra" style={{ fontSize: 20, color: 'white', marginRight: '20px', marginLeft: '10px' }}>
                         Mis Apuestas
                     </Link>
