@@ -20,9 +20,7 @@ function Dashboard() {
   const [bonosSeleccionados, setBonosSeleccionados] = useState<{ [key: number]: number }>({});
   const [apuestaSeleccionada, setApuestaSeleccionada] = useState<{ [key: number]: string | null }>({});
   const [filteredFixtures, setFilteredFixtures] = useState<Fixture[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>('');
   const [page, setPage] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState<'wallet' | 'webpay'>('webpay');
   const fixturesPerPage = 10;
   const { showModal } = useModal();
 
@@ -42,17 +40,6 @@ function Dashboard() {
     };
     void fetchFixtures();
   }, [page]);
-
-  // Filtrar por fecha
-  const handleDateFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = event.target.value;
-    setSelectedDate(selected);
-    if (selected) {
-      setFilteredFixtures(fixtures.filter(fixture => fixture.date.includes(selected)));
-    } else {
-      setFilteredFixtures(fixtures);
-    }
-  };
 
   const findMatchWinnerOdd = (fixture: Fixture, team: string): OddValue | null => {
     const odd = fixture.odds.find((odd) => odd.name === 'Match Winner');
@@ -115,35 +102,13 @@ function Dashboard() {
     }));
   };
 
-  const handlePaymentMethodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setPaymentMethod(event.target.value as 'webpay' | 'wallet');
-  };
-
   const handleComprarWrapper = (id: number) => {
     void handleComprar(id);
   };
 
   return (
     <div id="compras-container" style={{ color: "white" }}>
-      <h1 style={{ marginBottom: "50px" }}>Compra de Bonos</h1>
-      <div>
-        <label htmlFor="paymentMethod" style={{ marginRight: "20px", marginBottom: "50px" }}>Método de pago:</label>
-        <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentMethodChange}>
-          <option value="webpay">Webpay</option>
-          <option value="wallet">Wallet</option>
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="dateFilter" style={{ marginRight: "20px", marginBottom: "50px" }}>Filtrar por fecha:</label>
-        <input
-          type="date"
-          id="dateFilter"
-          value={selectedDate}
-          onChange={handleDateFilter}
-        />
-      </div>
-
+      
       {filteredFixtures.length === 0 ? (
         <p>No hay fixtures disponibles en este momento.</p>
       ) : (

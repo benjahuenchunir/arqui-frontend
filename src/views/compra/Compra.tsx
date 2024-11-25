@@ -44,6 +44,8 @@ function Compra() {
   const [lastRecommendationCalculation, setLastRecommendationCalculation] = useState<Date | null>(null);
   const [recommendedFixtures, setRecommendedFixtures] = useState<Fixture[]>([]);
 
+  const isAdmin = user && user['arqui-roles']?.includes('admin');
+
   useEffect(() => {
     const fetchRecommendedFixtures = async () => {
       try {
@@ -230,7 +232,7 @@ function Compra() {
   };
   
   const handleComprarReservedWrapper = (id: number) => {
-    void handleComprar(id);
+    void handleComprarReserved(id);
   };
 
   return (
@@ -263,6 +265,7 @@ function Compra() {
               handleComprar={handleComprarWrapper}
               handleComprarReserved={handleComprarReservedWrapper}
               findMatchWinnerOdd={findMatchWinnerOdd}
+              isAdmin={isAdmin}
             />
           ))}
         </div>
@@ -293,6 +296,8 @@ function Compra() {
                 handleBonosChange={handleBonosChange}
                 handleComprar={handleComprarWrapper}
                 findMatchWinnerOdd={findMatchWinnerOdd}
+                handleComprarReserved={handleComprarReservedWrapper}
+                isAdmin={isAdmin}
               />
             ))}
           </div>
