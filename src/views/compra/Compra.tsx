@@ -238,6 +238,7 @@ function Compra() {
   return (
     <div id="compras-container" style={{ color: "white" }}>
       <h1 style={{ marginBottom: "50px" }}>Compra de Bonos</h1>
+      <p>Los reservados tienen 10% de descuento!!!</p>
       <div>
         <label htmlFor="paymentMethod" style={{ marginRight: "20px", marginBottom: "50px" }}>Método de pago:</label>
         <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentMethodChange}>
