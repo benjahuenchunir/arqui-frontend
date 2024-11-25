@@ -20,7 +20,7 @@ function Wallet() {
         return;
       }
       try {
-        const response = await axios.get<WalletResponse>(`/wallet/${user.sub}`);
+        const response = await axios.get<WalletResponse>(`/users/wallet/${user.sub}`);
         setBalance(response.data.balance);
       } catch (error) {
         console.error('Error fetching balance:', error);
@@ -44,7 +44,7 @@ function Wallet() {
 
   const handleConfirmarFondos = async () => {
     try {
-      await axios.patch("/wallet", { uid: user.sub, amount: cantidadFondos });
+      await axios.patch("/users/wallet", { uid: user.sub, amount: cantidadFondos });
       setBalance(balance + cantidadFondos); // Update balance
       setMostrarModal(false);  // Cerrar el modal después de confirmar
     } catch (error) {
