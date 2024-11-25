@@ -45,4 +45,7 @@ export interface Fixture {
   league: League;
   odds: Odd[];
   remaining_bets: number;
+  reserved_home: number, 
+  reserved_away: number, 
+  reserved_draw: number
 }

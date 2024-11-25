@@ -23,7 +23,7 @@ export function FixtureCard(
                         className={apuestaSeleccionada[fixture.id] === 'Local' ? 'selected' : ''}
                         onClick={() => handleApuestaChange(fixture.id, 'Local')}
                     >
-                        Gana Local
+                        Gana Local ({fixture.reserved_home})
                     </button>
                 </div>
                 <div className="apuesta-item">
@@ -32,7 +32,7 @@ export function FixtureCard(
                         className={apuestaSeleccionada[fixture.id] === 'Empate' ? 'selected' : ''}
                         onClick={() => handleApuestaChange(fixture.id, 'Empate')}
                     >
-                        Empate
+                        Empate ({fixture.reserved_draw})
                     </button>
                 </div>
                 <div className="apuesta-item">
@@ -41,7 +41,7 @@ export function FixtureCard(
                         className={apuestaSeleccionada[fixture.id] === 'Visita' ? 'selected' : ''}
                         onClick={() => handleApuestaChange(fixture.id, 'Visita')}
                     >
-                        Gana Visita
+                        Gana Visita ({fixture.reserved_away})
                     </button>
                 </div>
             </div>
