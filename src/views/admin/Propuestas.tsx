@@ -9,6 +9,7 @@ interface Offer {
   result: string;
   quantity: number;
   group_id: string | number;
+  proposal_id: string | number;
 }
 
 const Comprar = () => {
@@ -32,13 +33,29 @@ const Comprar = () => {
     fetchOffers();
   }, []);
 
-  const onAccept = (groupId: string | number) => {
-    console.log(`Accepting proposal for group ${groupId}`);
+  const onAccept = async (proposal_id: string | number) => {
+    try {
+      const body = {
+        user_id: user?.sub,
+        proposal_id: proposal_id
+      };
+      await axios.post(`/auctions/accept`, body);
+    } catch (err) {
+      setError('Failed to accept proposal');
     }
+  };
 
-    const onReject = (groupId: string | number) => {
-    console.log(`Rejecting proposal for group ${groupId}`);
+  const onReject = async (proposal_id: string | number) => {
+    try {
+      const body = {
+        user_id: user?.sub,
+        proposal_id: proposal_id
+      };
+      await axios.post(`/auctions/reject`, body);
+    } catch (err) {
+      setError('Failed to reject proposal');
     }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -52,9 +69,9 @@ const Comprar = () => {
           round={offer.round}
           result={offer.result}
           quantity={offer.quantity}
-          groupId={offer.group_id}
-          onAccept={(group_id) => void onAccept(group_id)}
-          onReject={(group_id) => void onReject(group_id)}
+          proposalId={offer.proposal_id}
+          onAccept={(proposalId) => void onAccept(proposalId)}
+          onReject={(proposalId) => void onReject(proposalId)}
         />
       ))}
     </div>
