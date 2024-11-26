@@ -52,7 +52,6 @@ const Comprar = () => {
           round={offer.round}
           result={offer.result}
           quantity={offer.quantity}
-          groupId={offer.group_id}
           auction_id={offer.auction_id}
           onComprar={onComprar}
         />
