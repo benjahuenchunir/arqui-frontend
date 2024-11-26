@@ -36,26 +36,47 @@ const Comprar = () => {
     fetchOffers();
   }, []);
 
+  const sendDiscountSignal = async () => {
+    try {
+      await axios.post(`/discounts?user_id=${user?.sub}`);
+    } catch (err) {
+      console.error("Failed to send discount signal", err);
+    }
+  };
+
   const onComprar = (auction_id: string | number) => {
     navigate(`/admin/ofrecer?auction_id=${auction_id}`);
   }
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
   return (
     <div className="offers-container">
-      {offers.map((offer) => (
-        <OfferCard
-          key={`${offer.group_id}-${offer.auction_id}`}
-          league={offer.league_name}
-          round={offer.round}
-          result={offer.result}
-          quantity={offer.quantity}
-          auction_id={offer.auction_id}
-          onComprar={onComprar}
-        />
-      ))}
+      {/* El botón siempre será visible */}
+      <button color="primary" style={{ marginTop: '90px', fontSize: 20, justifyContent: "center" }}  onClick={sendDiscountSignal}>
+        Activar Descuento
+      </button>
+      {/* Lógica de renderizado de contenido */}
+      {loading && <div style={{ color: "white", textAlign: "center" }}>Loading...</div>}
+      {error && <div style={{ color: "white", textAlign: "center" }}>{error}</div>}
+      {!loading && !error && offers.length > 0 ? (
+        offers.map((offer) => (
+          <OfferCard
+            key={`${offer.group_id}-${offer.auction_id}`}
+            league={offer.league_name}
+            round={offer.round}
+            result={offer.result}
+            quantity={offer.quantity}
+            auction_id={offer.auction_id}
+            onComprar={onComprar}
+          />
+        ))
+      ) : (
+        !loading &&
+        !error && (
+          <div style={{ color: "white", textAlign: "center", marginTop: "20px" }}>
+            No offers available
+          </div>
+        )
+      )}
     </div>
   );
 };
