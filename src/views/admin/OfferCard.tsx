@@ -5,12 +5,11 @@ interface OfferCardProps {
   round: string;
   result: string;
   quantity: number;
-  groupId: string | number;
   auction_id: string | number;
   onComprar: (groupId: string | number) => void;
 }
 
-const OfferCard: React.FC<OfferCardProps> = ({ league, round, result, quantity, groupId, onComprar, auction_id }) => {
+const OfferCard: React.FC<OfferCardProps> = ({ league, round, result, quantity, onComprar, auction_id }) => {
   return (
     <div className="offer-card">
       <h3>{league}</h3>
