@@ -40,11 +40,11 @@ const Comprar = () => {
     console.log(`Rejecting proposal for group ${groupId}`);
     }
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return <div style={{ color: "white", textAlign: "center" }}>Loading...</div>;
+  if (error) return <div style={{ color: "white", textAlign: "center" }}>{error}</div>;
 
   return (
-    <div className="offers-container">
+    <div className="offers-container" >
       {offers.map((offer) => (
         <ProposalCard
           key={`${offer.group_id}-${offer.round}`}
